@@ -11,7 +11,7 @@ const navigation = (): VerticalNavItemsType => {
     {
       title: 'Connections',
       path: '/connections',
-      icon: 'mdi:email-outline'
+      icon: 'mdi:access-point'
     }
     // {
     //   path: '/acl',

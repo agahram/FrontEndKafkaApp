@@ -3,23 +3,28 @@ import { Ref, useState, forwardRef, ReactElement } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
+import Chip from '@mui/material/Chip'
 import Grid from '@mui/material/Grid'
+import Card from '@mui/material/Card'
+import Switch from '@mui/material/Switch'
 import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
+import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
+import InputLabel from '@mui/material/InputLabel'
+import FormControl from '@mui/material/FormControl'
+import CardContent from '@mui/material/CardContent'
 import Fade, { FadeProps } from '@mui/material/Fade'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import Icon from 'src/@core/components/icon'
 import TestConnection from './TestConnection'
+import ConnectionsComponent from './ConnectionsComponent'
 import { useConnection } from 'src/context/ConnectionsContext'
-
-interface Props {
-  details: string
-  name: string
-}
+import Stack from '@mui/material/Stack'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 const Transition = forwardRef(function Transition(
   props: FadeProps & { children?: ReactElement<any, any> },
@@ -28,45 +33,51 @@ const Transition = forwardRef(function Transition(
   return <Fade ref={ref} {...props} />
 })
 
-export default function ConfigButton({ details, name }: Props) {
-  const { editConnection } = useConnection()
+export default function NewConnection() {
   const [show, setShow] = useState<boolean>(false)
-  const [updateConnection, setUpdateConnection] = useState({
-    name: name,
-    boot_server: details,
+  const { connections, addConnections } = useConnection()
+  const [newConnection, setNewConnection] = useState({
+    name: '',
+    boot_server: '',
     id: 0
   })
-
-  function handleClick() {
-    setShow(true)
-  }
-
-  function handleUpdate() {
-    if (updateConnection) {
-      editConnection({
-        connectionName: updateConnection.name,
-        bootStrapServer: updateConnection.boot_server,
-        connectionId: updateConnection.id
-      })
-    }
-    setShow(true)
-  }
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, key: string) => {
-    setUpdateConnection({
-      ...updateConnection,
+    setNewConnection({
+      ...newConnection,
       [key]: event.target.value
     })
   }
+  function handleClick() {
+    setShow(true)
+  }
+  function handleCreation() {
+    if (newConnection) {
+      addConnections({
+        connectionName: newConnection.name,
+        bootStrapServer: newConnection.boot_server
+      })
+      setNewConnection({
+        name: '',
+        boot_server: '',
+        id: 0
+      })
+    }
+    setShow(false)
+  }
   return (
     <>
-      <Button variant='text' onClick={() => handleClick()} sx={{ mr: 2, fontWeight: 401, fontSize: 13 }}>
-        <svg xmlns='http://www.w3.org/2000/svg' width='1.3em' height='3em' viewBox='0 0 24 24'>
+      <Button
+        variant='contained'
+        sx={{ mr: 3, color: 'white', marginLeft: 200, position: 'sticky' }}
+        onClick={() => handleClick()}
+      >
+        <svg xmlns='http://www.w3.org/2000/svg' width='2em' height='1.7em' viewBox='0 0 24 24'>
           <path
             fill='currentColor'
-            d='m9.25 22l-.4-3.2q-.325-.125-.612-.3t-.563-.375L4.7 19.375l-2.75-4.75l2.575-1.95Q4.5 12.5 4.5 12.338v-.675q0-.163.025-.338L1.95 9.375l2.75-4.75l2.975 1.25q.275-.2.575-.375t.6-.3l.4-3.2h5.5l.4 3.2q.325.125.613.3t.562.375l2.975-1.25l2.75 4.75l-2.575 1.95q.025.175.025.338v.674q0 .163-.05.338l2.575 1.95l-2.75 4.75l-2.95-1.25q-.275.2-.575.375t-.6.3l-.4 3.2zm2.8-6.5q1.45 0 2.475-1.025T15.55 12t-1.025-2.475T12.05 8.5q-1.475 0-2.488 1.025T8.55 12t1.013 2.475T12.05 15.5'
+            d='M18 12.998h-5v5a1 1 0 0 1-2 0v-5H6a1 1 0 0 1 0-2h5v-5a1 1 0 0 1 2 0v5h5a1 1 0 0 1 0 2'
           ></path>
         </svg>
-        Configuration
+        Add Connection
       </Button>
       <Dialog
         fullWidth
@@ -102,10 +113,10 @@ export default function ConfigButton({ details, name }: Props) {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                defaultValue={name}
+                defaultValue='oliverQueen'
                 label='Connection Name'
-                placeholder={name}
-                value={updateConnection.name}
+                placeholder='johnDoe'
+                value={newConnection.name}
                 onChange={e => handleInputChange(e, 'name')}
               />
             </Grid>
@@ -113,15 +124,15 @@ export default function ConfigButton({ details, name }: Props) {
               <Typography variant='body2'>Configure your Apache Kafka connection manually</Typography>
             </Grid>
             <Grid item sm={6} xs={12}>
-              <TestConnection bootStrapServer={updateConnection.boot_server} />
+              <TestConnection bootStrapServer={newConnection.boot_server} />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                defaultValue={details}
+                defaultValue='oliverQueen'
                 label='Bootstrap Servers'
-                placeholder={details}
-                value={updateConnection.boot_server}
+                placeholder='johnDoe'
+                value={newConnection.boot_server}
                 onChange={e => handleInputChange(e, 'boot_server')}
               />
             </Grid>
@@ -137,8 +148,8 @@ export default function ConfigButton({ details, name }: Props) {
           <Button variant='outlined' onClick={() => setShow(false)}>
             Cancel
           </Button>
-          <Button variant='contained' sx={{ mr: 2 }} onClick={() => handleUpdate()}>
-            Update
+          <Button variant='contained' sx={{ mr: 2 }} onClick={() => handleCreation()}>
+            Create
           </Button>
         </DialogActions>
       </Dialog>
