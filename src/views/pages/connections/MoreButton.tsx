@@ -93,10 +93,10 @@ export default function PositionedPopper({ id, details, name }: Props) {
           </Fade>
         )}
       </Popper>
-      <Grid container justifyContent='left'>
+      <Grid container justifyContent='flex-start'>
         <Grid item container xs={6} alignItems='flex-end' direction='column'>
           <Grid item>
-            <Button onClick={handleClick('right-end')} sx={{ marginTop: -2, fontWeight: 1000, marginRight: -10 }}>
+            <Button onClick={handleClick('right-end')} sx={{ marginTop: -2, fontWeight: 1000, position: 'relative' }}>
               ...
             </Button>
           </Grid>

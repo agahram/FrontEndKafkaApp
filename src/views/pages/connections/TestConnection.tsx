@@ -26,11 +26,20 @@ const Transition = forwardRef(function Transition(
 
 export default function TestConnection({ bootStrapServer }: Props) {
   const [show, setShow] = useState<boolean>(false)
-  const { checkConnection, testConnection } = useConnection()
+  const { checkConnection, testConnection, setTestConnection } = useConnection()
 
   function handleTestConnection() {
-    checkConnection(bootStrapServer)
     setShow(true)
+  }
+  async function handleClickConnect() {
+    setShow(true)
+    let data = await checkConnection(bootStrapServer)
+    console.log('DATA', data)
+    if (data?.ok) {
+      setTestConnection(data?.status === 200)
+    } else {
+      setTestConnection(data?.status === 200)
+    }
   }
   return (
     <>
@@ -103,7 +112,7 @@ export default function TestConnection({ bootStrapServer }: Props) {
             </Button>
           ) : (
             <>
-              <Button variant='contained' sx={{ mr: 2 }} onClick={() => handleTestConnection()}>
+              <Button variant='contained' sx={{ mr: 2 }} onClick={() => handleClickConnect()}>
                 Try again
               </Button>
               <Button variant='contained' sx={{ mr: 2 }} onClick={() => setShow(false)}>

@@ -12,6 +12,8 @@ import NewConnection from './NewConnectionButton'
 import { useConnection } from 'src/context/ConnectionsContext'
 import { margin } from '@mui/system'
 import { left } from '@popperjs/core'
+import toast from 'react-hot-toast'
+import ViewCluster from './ViewCluster'
 
 interface Props {
   name: string
@@ -29,25 +31,27 @@ const DialogEditUserInfo = ({ name, details, id }: Props) => {
     setIsConnected(false)
   }
 
-  function handleClickConnect() {
+  async function handleClickConnect() {
     setIsLoading(true)
-    setTimeout(async () => {
-      let data = await checkConnection(details)
+    let data = await checkConnection(details)
+    console.log('DATA', data)
+    if (data?.ok) {
       setTestConnection(data?.status === 200)
       setIsConnected(true)
       setIsLoading(false)
-    }, 3000)
+    } else {
+      toast('Cannot connect')
+      setIsLoading(false)
+    }
   }
-  // console.log(details)
-  // console.log(testConnection && isConnected)
 
   function Loader() {
     return (
-      <Stack sx={{ marginLeft: 40 }}>
-        <Stack sx={{ marginLeft: -40 }}>
+      <Stack>
+        <Stack>
           <p>Loading...</p>
         </Stack>
-        <svg xmlns='http://www.w3.org/2000/svg' width='3em' height='4em' viewBox='0 0 24 24'>
+        {/* <svg xmlns='http://www.w3.org/2000/svg' width='3em' height='4em' viewBox='0 0 24 24'>
           <path
             fill='none'
             stroke='currentColor'
@@ -66,7 +70,7 @@ const DialogEditUserInfo = ({ name, details, id }: Props) => {
               values='0 12 12;360 12 12'
             ></animateTransform>
           </path>
-        </svg>
+        </svg> */}
       </Stack>
     )
   }
@@ -107,9 +111,10 @@ const DialogEditUserInfo = ({ name, details, id }: Props) => {
             <Loader />
           ) : testConnection && isConnected ? (
             <Stack spacing={1.5}>
-              <Button variant='outlined' sx={{ mr: 2, fontWeight: 401 }} fullWidth>
+              {/* <Button variant='outlined' sx={{ mr: 2, fontWeight: 401 }} fullWidth>
                 View cluster details
-              </Button>
+              </Button> */}
+              <ViewCluster name={name} />
               <Button
                 variant='contained'
                 sx={{ mr: 2, color: 'white' }}

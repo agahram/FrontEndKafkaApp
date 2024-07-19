@@ -18,6 +18,8 @@ interface InterfaceConnection {
   checkConnection: (bootStrapServer: string) => null | Promise<void> | Promise<Response>
   testConnection: boolean
   setTestConnection: (testConnection: boolean) => void
+  getClusterInfo: () => void
+  rows: undefined | { [s: string]: any }
 }
 
 const InitialValue = {
@@ -27,7 +29,9 @@ const InitialValue = {
   editConnection: (connection: Connection) => null,
   checkConnection: (bootStrapServer: string) => null,
   testConnection: false,
-  setTestConnection: (testConnection: boolean) => null
+  setTestConnection: (testConnection: boolean) => null,
+  getClusterInfo: () => null,
+  rows: undefined
 }
 
 const ConnectionContext = createContext<InterfaceConnection>(InitialValue)
@@ -35,6 +39,7 @@ const ConnectionContext = createContext<InterfaceConnection>(InitialValue)
 const ConnectionProvider = ({ children }: Props) => {
   const [connections, setConnections] = useState<Connection[]>([])
   const [testConnection, setTestConnection] = useState(false)
+  const [rows, setRows] = useState()
 
   const addConnections = async (connection: Connection) => {
     // async function fetchConnections() {
@@ -53,9 +58,6 @@ const ConnectionProvider = ({ children }: Props) => {
           return response.json()
         })
         .then(data => console.log('DATA', data))
-
-      // if (!response.ok) throw new Error('Something went wrong with the fetching connections')
-      // return response
     } catch (err: any) {
       console.log(err.message)
     }
@@ -100,7 +102,7 @@ const ConnectionProvider = ({ children }: Props) => {
     setConnections(await getConnections())
   }
   const checkConnection = async (bootStrapServer: string) => {
-    console.log(bootStrapServer)
+    // console.log(bootStrapServer)
 
     const response = await fetch(`http://localhost:5144/api/KafkaCluster/check-connection?address=${bootStrapServer}`, {
       method: 'GET',
@@ -123,6 +125,26 @@ const ConnectionProvider = ({ children }: Props) => {
     let data = await getConnections()
     setConnections(data)
   }
+
+  const getClusterInfo = async () => {
+    try {
+      const response = await fetch('http://localhost:5144/api/KafkaCluster/get-cluster-info', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      let data = await response.json()
+      setRows(data)
+      // console.log(data)
+      return data
+    } catch (err: any) {
+      console.log(err.message)
+    }
+  }
+  useEffect(() => {
+    getClusterInfo()
+  }, [])
   return (
     <ConnectionContext.Provider
       value={{
@@ -132,7 +154,9 @@ const ConnectionProvider = ({ children }: Props) => {
         addConnections,
         checkConnection,
         testConnection,
-        setTestConnection
+        setTestConnection,
+        getClusterInfo,
+        rows
       }}
     >
       {children}
