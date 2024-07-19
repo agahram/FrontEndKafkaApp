@@ -32,18 +32,18 @@ export default function TestConnection({ bootStrapServer }: Props) {
     setShow(true)
   }
   async function handleClickConnect() {
+    setTestConnection(false)
     setShow(true)
     let data = await checkConnection(bootStrapServer)
     console.log('DATA', data)
     if (data?.ok) {
       setTestConnection(data?.status === 200)
-    } else {
-      setTestConnection(data?.status === 200)
     }
+    console.log(testConnection)
   }
   return (
     <>
-      <Button variant='contained' sx={{ mr: 2 }} onClick={() => handleTestConnection()}>
+      <Button variant='contained' sx={{ mr: 2 }} onClick={async () => await handleClickConnect()}>
         Test connection
       </Button>
       <Dialog
