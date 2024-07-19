@@ -51,7 +51,7 @@ export default function NewConnection() {
     setShow(true)
   }
   function handleCreation() {
-    if (newConnection) {
+    if (newConnection.name !== '' && newConnection.boot_server !== '') {
       addConnections({
         connectionName: newConnection.name,
         bootStrapServer: newConnection.boot_server

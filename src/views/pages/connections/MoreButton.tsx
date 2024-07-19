@@ -21,7 +21,7 @@ export default function PositionedPopper({ id, details, name }: Props) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
   const [open, setOpen] = React.useState(false)
   const [placement, setPlacement] = React.useState<PopperPlacementType>()
-  const { deleteConnection } = useConnection()
+  const { deleteConnection, addConnections } = useConnection()
 
   const handleClick = (newPlacement: PopperPlacementType) => (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -31,6 +31,13 @@ export default function PositionedPopper({ id, details, name }: Props) {
 
   function handleDelete() {
     deleteConnection(id)
+  }
+
+  function handleDuplicate() {
+    addConnections({
+      connectionName: name,
+      bootStrapServer: details
+    })
   }
 
   return (
@@ -49,11 +56,15 @@ export default function PositionedPopper({ id, details, name }: Props) {
               <Typography sx={{ p: 1 }}>
                 <Stack spacing={0.1}>
                   <Stack sx={{ marginBottom: -2 }}>
-                    <ConfigButton details={details} name={name} />
+                    <ConfigButton details={details} name={name} id={id} />
                   </Stack>
                   <Divider />
                   <Stack sx={{ marginBottom: -10, marginTop: -10 }}>
-                    <Button variant='text' sx={{ mr: 2, fontWeight: 401, fontSize: 13 }}>
+                    <Button
+                      variant='text'
+                      sx={{ mr: 2, fontWeight: 401, fontSize: 13 }}
+                      onClick={() => handleDuplicate()}
+                    >
                       <svg xmlns='http://www.w3.org/2000/svg' width='1.3em' height='3em' viewBox='0 0 256 256'>
                         <path
                           fill='currentColor'

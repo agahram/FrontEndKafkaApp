@@ -1,5 +1,6 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react'
 import { setTimeout } from 'timers'
+import { boolean, string } from 'yup'
 
 interface Connection {
   connectionName: string
@@ -14,8 +15,9 @@ interface InterfaceConnection {
   addConnections: (connection: Connection) => void
   deleteConnection: (id: number) => void
   editConnection: (connection: Connection) => void
-  checkConnection: (bootStrapServer: string) => void
+  checkConnection: (bootStrapServer: string) => null | Promise<void> | Promise<Response>
   testConnection: boolean
+  setTestConnection: (testConnection: boolean) => void
 }
 
 const InitialValue = {
@@ -24,7 +26,8 @@ const InitialValue = {
   deleteConnection: (id: number) => null,
   editConnection: (connection: Connection) => null,
   checkConnection: (bootStrapServer: string) => null,
-  testConnection: false
+  testConnection: false,
+  setTestConnection: (testConnection: boolean) => null
 }
 
 const ConnectionContext = createContext<InterfaceConnection>(InitialValue)
@@ -35,6 +38,7 @@ const ConnectionProvider = ({ children }: Props) => {
 
   const addConnections = async (connection: Connection) => {
     // async function fetchConnections() {
+    console.log(connection)
     try {
       const response = await fetch('http://localhost:5144/api/KafkaCluster/create-connection', {
         method: 'POST',
@@ -104,18 +108,32 @@ const ConnectionProvider = ({ children }: Props) => {
         'Content-Type': 'application/json'
       }
     })
-    let data = response
-    // console.log(data)
-    if (response.status === 200) {
-      setTestConnection(true)
-    } else {
-      setTestConnection(false)
-    }
+    return response
   }
-  const editConnection = (connection: Connection) => {}
+  const editConnection = async (connection: Connection) => {
+    console.log(connection)
+    const response = await fetch('http://localhost:5144/api/KafkaCluster/update-connection', {
+      method: 'PUT',
+      body: JSON.stringify(connection),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    console.log(response)
+    let data = await getConnections()
+    setConnections(data)
+  }
   return (
     <ConnectionContext.Provider
-      value={{ connections, deleteConnection, editConnection, addConnections, checkConnection, testConnection }}
+      value={{
+        connections,
+        deleteConnection,
+        editConnection,
+        addConnections,
+        checkConnection,
+        testConnection,
+        setTestConnection
+      }}
     >
       {children}
     </ConnectionContext.Provider>

@@ -19,6 +19,7 @@ import { useConnection } from 'src/context/ConnectionsContext'
 interface Props {
   details: string
   name: string
+  id: number
 }
 
 const Transition = forwardRef(function Transition(
@@ -28,13 +29,13 @@ const Transition = forwardRef(function Transition(
   return <Fade ref={ref} {...props} />
 })
 
-export default function ConfigButton({ details, name }: Props) {
+export default function ConfigButton({ details, name, id }: Props) {
   const { editConnection } = useConnection()
   const [show, setShow] = useState<boolean>(false)
   const [updateConnection, setUpdateConnection] = useState({
     name: name,
     boot_server: details,
-    id: 0
+    id: id
   })
 
   function handleClick() {
@@ -46,10 +47,10 @@ export default function ConfigButton({ details, name }: Props) {
       editConnection({
         connectionName: updateConnection.name,
         bootStrapServer: updateConnection.boot_server,
-        connectionId: updateConnection.id
+        connectionId: id
       })
     }
-    setShow(true)
+    setShow(false)
   }
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, key: string) => {
     setUpdateConnection({
@@ -102,9 +103,9 @@ export default function ConfigButton({ details, name }: Props) {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                defaultValue={name}
+                defaultValue={updateConnection.name}
                 label='Connection Name'
-                placeholder={name}
+                placeholder={updateConnection.name}
                 value={updateConnection.name}
                 onChange={e => handleInputChange(e, 'name')}
               />
@@ -118,9 +119,9 @@ export default function ConfigButton({ details, name }: Props) {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                defaultValue={details}
+                defaultValue={updateConnection.boot_server}
                 label='Bootstrap Servers'
-                placeholder={details}
+                placeholder={updateConnection.boot_server}
                 value={updateConnection.boot_server}
                 onChange={e => handleInputChange(e, 'boot_server')}
               />

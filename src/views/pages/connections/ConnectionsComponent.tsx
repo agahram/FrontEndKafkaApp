@@ -10,6 +10,8 @@ import Stack from '@mui/material/Stack'
 import MoreButton from './MoreButton'
 import NewConnection from './NewConnectionButton'
 import { useConnection } from 'src/context/ConnectionsContext'
+import { margin } from '@mui/system'
+import { left } from '@popperjs/core'
 
 interface Props {
   name: string
@@ -21,20 +23,53 @@ const DialogEditUserInfo = ({ name, details, id }: Props) => {
   // ** States
   const [isLoading, setIsLoading] = useState(false)
   const [isConnected, setIsConnected] = useState(false)
-  const { connections, testConnection, checkConnection } = useConnection()
+  const { connections, testConnection, checkConnection, setTestConnection } = useConnection()
 
   function handleClickDisconnect() {
     setIsConnected(false)
   }
 
   function handleClickConnect() {
-    let data = checkConnection(details)
-
-    setIsConnected(true)
-    console.log(details)
+    setIsLoading(true)
+    setTimeout(async () => {
+      let data = await checkConnection(details)
+      setTestConnection(data?.status === 200)
+      setIsConnected(true)
+      setIsLoading(false)
+    }, 3000)
   }
   // console.log(details)
   // console.log(testConnection && isConnected)
+
+  function Loader() {
+    return (
+      <Stack sx={{ marginLeft: 40 }}>
+        <Stack sx={{ marginLeft: -40 }}>
+          <p>Loading...</p>
+        </Stack>
+        <svg xmlns='http://www.w3.org/2000/svg' width='3em' height='4em' viewBox='0 0 24 24'>
+          <path
+            fill='none'
+            stroke='currentColor'
+            strokeDasharray={15}
+            strokeDashoffset={15}
+            strokeLinecap='round'
+            strokeWidth={2}
+            d='M12 3C16.9706 3 21 7.02944 21 12'
+          >
+            <animate fill='freeze' attributeName='stroke-dashoffset' dur='0.3s' values='15;0'></animate>
+            <animateTransform
+              attributeName='transform'
+              dur='1.5s'
+              repeatCount='indefinite'
+              type='rotate'
+              values='0 12 12;360 12 12'
+            ></animateTransform>
+          </path>
+        </svg>
+      </Stack>
+    )
+  }
 
   return (
     <>
@@ -68,7 +103,9 @@ const DialogEditUserInfo = ({ name, details, id }: Props) => {
           <br />
           <br />
           <br />
-          {testConnection && isConnected ? (
+          {isLoading ? (
+            <Loader />
+          ) : testConnection && isConnected ? (
             <Stack spacing={1.5}>
               <Button variant='outlined' sx={{ mr: 2, fontWeight: 401 }} fullWidth>
                 View cluster details
