@@ -12,6 +12,11 @@ const navigation = (): VerticalNavItemsType => {
       title: 'Connections',
       path: '/connections',
       icon: 'mdi:access-point'
+    },
+    {
+      title: 'Catalog',
+      path: '/catalog',
+      icon: 'mdi:abacus'
     }
     // {
     //   path: '/acl',

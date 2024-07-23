@@ -22,7 +22,7 @@ const DialogExamples = () => {
       <NewConnectionButton />
       <Grid container spacing={6} className='match-height'>
         {connections?.map(connection => (
-          <Grid item md={3.2} sm={6} xs={12}>
+          <Grid item md={3.2} sm={6} xs={12} key={connection.connectionId}>
             <ConnectionsComponent
               name={connection.connectionName}
               details={connection.bootStrapServer}

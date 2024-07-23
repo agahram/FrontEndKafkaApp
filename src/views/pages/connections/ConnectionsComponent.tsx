@@ -14,6 +14,7 @@ import { margin } from '@mui/system'
 import { left } from '@popperjs/core'
 import toast from 'react-hot-toast'
 import ViewCluster from './ViewCluster'
+import { ThemeContext } from '@emotion/react'
 
 interface Props {
   name: string
@@ -47,11 +48,15 @@ const DialogEditUserInfo = ({ name, details, id }: Props) => {
 
   function Loader() {
     return (
-      <Stack>
-        <Stack>
-          <p>Loading...</p>
-        </Stack>
-        {/* <svg xmlns='http://www.w3.org/2000/svg' width='3em' height='4em' viewBox='0 0 24 24'>
+      <Stack
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        <p>Loading...</p>
+        <svg xmlns='http://www.w3.org/2000/svg' width='3em' height='4em' viewBox='0 0 24 24'>
           <path
             fill='none'
             stroke='currentColor'
@@ -70,7 +75,7 @@ const DialogEditUserInfo = ({ name, details, id }: Props) => {
               values='0 12 12;360 12 12'
             ></animateTransform>
           </path>
-        </svg> */}
+        </svg>
       </Stack>
     )
   }

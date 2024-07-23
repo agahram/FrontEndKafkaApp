@@ -28,9 +28,6 @@ export default function TestConnection({ bootStrapServer }: Props) {
   const [show, setShow] = useState<boolean>(false)
   const { checkConnection, testConnection, setTestConnection } = useConnection()
 
-  function handleTestConnection() {
-    setShow(true)
-  }
   async function handleClickConnect() {
     setTestConnection(false)
     setShow(true)

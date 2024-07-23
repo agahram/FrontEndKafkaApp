@@ -4,10 +4,11 @@ import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import { GridColDef } from '@mui/x-data-grid'
 import { DataGrid } from '@mui/x-data-grid/DataGrid'
-import React from 'react'
+import React, { useState } from 'react'
 import { useConnection } from 'src/context/ConnectionsContext'
 import { object } from 'yup'
-import Breadcrumb from './Breadcrumb'
+import Breadcrumb from 'src/views/pages/connections/details/Breadcrumb'
+import SearchComp from 'src/views/pages/connections/details/SearchComp'
 
 // ** Data Import
 
@@ -27,6 +28,7 @@ const columns: GridColDef[] = [
 ]
 
 export default function index() {
+  const [query, setQuery] = useState('')
   let data: any = []
   const { rows } = useConnection()
   if (rows !== null && typeof rows === 'object') {
@@ -42,12 +44,15 @@ export default function index() {
     console.log('obj is null or undefined')
   }
   console.log(data)
-
+  const filteredData = data.filter((row: { name: string }) => {
+    return row.name.toLowerCase().includes(query.toLowerCase())
+  })
   return (
     <Card>
+      <SearchComp data={data} query={query} setQuery={setQuery} />
       <CardHeader title={<Breadcrumb />} />
-      <Box sx={{ height: 500 }}>
-        <DataGrid columns={columns} rows={data} getRowId={item => item.name} />
+      <Box sx={{ height: 700 }}>
+        <DataGrid columns={columns} rows={filteredData} getRowId={item => item.name} />
       </Box>
     </Card>
   )

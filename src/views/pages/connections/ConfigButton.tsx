@@ -68,6 +68,7 @@ export default function ConfigButton({ details, name, id }: Props) {
           ></path>
         </svg>
         Configuration
+        {/* <Typography sx={{ fontSize: 13, fontWeight: 600 }}>Configuration</Typography> */}
       </Button>
       <Dialog
         fullWidth
