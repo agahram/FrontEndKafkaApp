@@ -9,8 +9,13 @@ import Stack from '@mui/material/Stack'
 import { useState } from 'react'
 import Card from '@mui/material/Card'
 import { useTopic } from 'src/context/TopicsContext'
+import toast from 'react-hot-toast'
 
-export default function SimpleDialogDemo() {
+interface Props {
+  name: string
+}
+
+export default function SimpleDialogDemo({ name }: Props) {
   const { cloneTopics } = useTopic()
   const [open, setOpen] = useState(false)
   const [cloneTopic, setCloneTopic] = useState({
@@ -27,12 +32,16 @@ export default function SimpleDialogDemo() {
   }
 
   const handleTopicCreation = () => {
-    cloneTopics(cloneTopic.oldName, cloneTopic.newName)
-    setCloneTopic({
-      oldName: '',
-      newName: ''
-    })
-    handleClose()
+    if (cloneTopic.newName === '') {
+      toast('New Name is required')
+    } else {
+      cloneTopics(cloneTopic.oldName, cloneTopic.newName)
+      setCloneTopic({
+        oldName: '',
+        newName: ''
+      })
+      handleClose()
+    }
   }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, key: string) => {
@@ -65,8 +74,10 @@ export default function SimpleDialogDemo() {
                 <FormControl sx={{ width: '45ch' }}>
                   <OutlinedInput
                     placeholder='oldName'
-                    value={cloneTopic.oldName}
+                    defaultValue={name}
+                    value={name}
                     onChange={e => handleInputChange(e, 'oldName')}
+                    disabled
                   />
                 </FormControl>
               </form>

@@ -9,8 +9,13 @@ import Stack from '@mui/material/Stack'
 import { useState } from 'react'
 import Card from '@mui/material/Card'
 import { useTopic } from 'src/context/TopicsContext'
+import toast from 'react-hot-toast'
 
-export default function SimpleDialogDemo() {
+interface Props {
+  name: string
+}
+
+export default function SimpleDialogDemo({ name }: Props) {
   const { editTopics } = useTopic()
   const [open, setOpen] = useState(false)
   const [editTopic, setEditTopic] = useState({
@@ -27,12 +32,16 @@ export default function SimpleDialogDemo() {
   }
 
   const handleTopicEdit = () => {
-    editTopics(editTopic.oldName, editTopic.newName)
-    setEditTopic({
-      oldName: '',
-      newName: ''
-    })
-    handleClose()
+    if (editTopic.newName === '') {
+      toast('New Name is required')
+    } else {
+      editTopics(editTopic.oldName, editTopic.newName)
+      setEditTopic({
+        oldName: '',
+        newName: ''
+      })
+      handleClose()
+    }
   }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, key: string) => {
@@ -44,8 +53,12 @@ export default function SimpleDialogDemo() {
 
   return (
     <div>
-      <Button variant='text' sx={{ mr: 2, fontWeight: 401, fontSize: 13 }} onClick={() => handleClickOpen()}>
-        <svg xmlns='http://www.w3.org/2000/svg' width='1.3em' height='1.3em' viewBox='0 0 24 24'>
+      <Button
+        variant='text'
+        sx={{ mr: 2, fontWeight: 401, fontSize: 13, marginLeft: 5 }}
+        onClick={() => handleClickOpen()}
+      >
+        <svg xmlns='http://www.w3.org/2000/svg' width='1.3em' height='3em' viewBox='0 0 24 24'>
           <path
             fill='currentColor'
             d='M20.71 7.04c-.34.34-.67.67-.68 1c-.03.32.31.65.63.96c.48.5.95.95.93 1.44s-.53 1-1.04 1.5l-4.13 4.14L15 14.66l4.25-4.24l-.96-.96l-1.42 1.41l-3.75-3.75l3.84-3.83c.39-.39 1.04-.39 1.41 0l2.34 2.34c.39.37.39 1.02 0 1.41M3 17.25l9.56-9.57l3.75 3.75L6.75 21H3z'
@@ -57,15 +70,17 @@ export default function SimpleDialogDemo() {
         <DialogTitle sx={{ justifyContent: 'center' }}>Create a new topic</DialogTitle>
         <List sx={{ pt: 0, width: 500, display: 'flex', marginTop: -5, justifyContent: 'center' }}>
           <Stack>
-            <p>Clone existing topic in your environment.</p>
-            <p>Enter old name</p>
+            <p>Edit existing topic in your environment.</p>
+            <p>Old name</p>
             <div>
               <form noValidate autoComplete='off'>
                 <FormControl sx={{ width: '45ch' }}>
                   <OutlinedInput
                     placeholder='oldName'
-                    value={editTopic.oldName}
+                    defaultValue={name}
+                    value={name}
                     onChange={e => handleInputChange(e, 'oldName')}
+                    disabled
                   />
                 </FormControl>
               </form>
