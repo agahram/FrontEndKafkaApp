@@ -35,7 +35,7 @@ export default function SimpleDialogDemo({ name }: Props) {
     if (editTopic.newName === '') {
       toast('New Name is required')
     } else {
-      editTopics(editTopic.oldName, editTopic.newName)
+      editTopics(name, editTopic.newName)
       setEditTopic({
         oldName: '',
         newName: ''
@@ -55,7 +55,7 @@ export default function SimpleDialogDemo({ name }: Props) {
     <div>
       <Button
         variant='text'
-        sx={{ mr: 2, fontWeight: 401, fontSize: 13, marginLeft: 5 }}
+        sx={{ mr: 2, fontWeight: 401, fontSize: 13, marginLeft: 4, padding: 0.2 }}
         onClick={() => handleClickOpen()}
       >
         <svg xmlns='http://www.w3.org/2000/svg' width='1.3em' height='3em' viewBox='0 0 24 24'>

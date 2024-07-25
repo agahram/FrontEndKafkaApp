@@ -10,6 +10,10 @@ import Loader from 'src/views/pages/catalog/Loader'
 import MoreButton from 'src/views/pages/catalog/MoreButton'
 import SearchComp from 'src/views/pages/catalog/SearchComp'
 import TopicConfig from 'src/views/pages/catalog/configuration/TopicConfig'
+import { saveAs } from 'file-saver'
+import * as XLSX from 'xlsx'
+import ExportFile from 'src/views/pages/catalog/ExportFile'
+import ImportFile from 'src/views/pages/catalog/ImportFile'
 
 const columns: GridColDef[] = [
   {
@@ -98,25 +102,8 @@ export default function index() {
   return (
     <>
       <Stack direction='row' spacing={1} sx={{ display: 'flex', alignItems: 'right', justifyContent: 'right' }}>
-        <Button variant='outlined'>
-          <svg xmlns='http://www.w3.org/2000/svg' width='1.3em' height='1.3em' viewBox='0 0 256 256'>
-            <path
-              fill='currentColor'
-              d='M220 112v96a20 20 0 0 1-20 20H56a20 20 0 0 1-20-20v-96a20 20 0 0 1 20-20h20a12 12 0 0 1 0 24H60v88h136v-88h-16a12 12 0 0 1 0-24h20a20 20 0 0 1 20 20M96.49 72.49L116 53v83a12 12 0 0 0 24 0V53l19.51 19.52a12 12 0 1 0 17-17l-40-40a12 12 0 0 0-17 0l-40 40a12 12 0 1 0 17 17Z'
-            ></path>
-          </svg>
-          Export
-        </Button>
-        <Button variant='outlined'>
-          <svg xmlns='http://www.w3.org/2000/svg' width='1.3em' height='1.3em' viewBox='0 0 24 24'>
-            <path fill='currentColor' d='m12 18l4-5h-3V2h-2v11H8z'></path>
-            <path
-              fill='currentColor'
-              d='M19 9h-4v2h4v9H5v-9h4V9H5c-1.103 0-2 .897-2 2v9c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2v-9c0-1.103-.897-2-2-2'
-            ></path>
-          </svg>
-          Import
-        </Button>
+        <ExportFile data={data} />
+        <ImportFile />
         <CreateTopic />
       </Stack>
       <SearchComp data={data} query={query} setQuery={setQuery} />

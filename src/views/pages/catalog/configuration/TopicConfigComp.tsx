@@ -35,7 +35,7 @@ const columns: GridColDef[] = [
 
 export default function TopicConfigComp({ topicName }: Props) {
   const [query, setQuery] = useState('')
-  const { getTopicConfig, getTopic, topic, rows } = useTopic()
+  const { getTopicConfig, getTopic, topic, rows, isLoading, loadingConfig } = useTopic()
   let data: any = []
   let topicSize = ''
   let retention = 0
@@ -43,10 +43,6 @@ export default function TopicConfigComp({ topicName }: Props) {
   useEffect(() => {
     if (topicName) {
       getTopicConfig(topicName)
-    }
-  }, [topicName])
-  useEffect(() => {
-    if (topicName) {
       getTopic(topicName)
     }
   }, [topicName])
@@ -105,39 +101,46 @@ export default function TopicConfigComp({ topicName }: Props) {
   } else {
     console.log('obj is null or undefined')
   }
+  console.log(isLoading, loadingConfig)
   return (
     <>
-      <Card sx={{ padding: 4, marginBottom: 2 }}>
-        <Breadcrumb />
-      </Card>
-      <Stack direction='row' spacing={7} sx={{ marginBottom: 2, display: 'flex' }}>
-        <Card sx={{ width: 300, padding: 5 }}>
-          <p>Records</p>
-          <CustomChip label={topic!.recordsCount} skin='light' color='primary' />
-        </Card>
-        <Card sx={{ width: 300, padding: 5 }}>
-          <p>Partitions</p>
-          <CustomChip label={topic!.partitions.length} skin='light' color='primary' />
-        </Card>
-        <Card sx={{ width: 300, padding: 5 }}>
-          <p>Topic Size</p>
-          <CustomChip label={topicSize} skin='light' color='primary' />
-        </Card>
-        <Card sx={{ width: 300, padding: 5 }}>
-          <p>Retention</p>
-          <CustomChip label={retention + ' days'} skin='light' color='primary' />
-        </Card>
-        <Card sx={{ width: 300, padding: 5 }}>
-          <p>Replication Factor</p>
-          <CustomChip label={topic!.replicationFactor} skin='light' color='primary' />
-        </Card>
-      </Stack>
-      <Card>
-        <SearchComp data={data} query={query} setQuery={setQuery} />
-        <Box sx={{ height: 700 }}>
-          <DataGrid columns={columns} rows={filteredData} getRowId={item => item.name} />
-        </Box>
-      </Card>
+      {!isLoading && !loadingConfig ? (
+        <>
+          <Card sx={{ padding: 4, marginBottom: 2 }}>
+            <Breadcrumb />
+          </Card>
+          <Stack direction='row' spacing={7} sx={{ marginBottom: 2, display: 'flex' }}>
+            <Card sx={{ width: 300, padding: 4 }}>
+              <p>Records</p>
+              <CustomChip label={topic!.recordsCount} skin='light' color='primary' />
+            </Card>
+            <Card sx={{ width: 300, padding: 4 }}>
+              <p>Partitions</p>
+              <CustomChip label={topic!.partitions.length} skin='light' color='primary' />
+            </Card>
+            <Card sx={{ width: 300, padding: 4 }}>
+              <p>Topic Size</p>
+              <CustomChip label={topicSize} skin='light' color='primary' />
+            </Card>
+            <Card sx={{ width: 300, padding: 4 }}>
+              <p>Retention</p>
+              <CustomChip label={retention + ' days'} skin='light' color='primary' />
+            </Card>
+            <Card sx={{ width: 300, padding: 4 }}>
+              <p>Replication Factor</p>
+              <CustomChip label={topic!.replicationFactor} skin='light' color='primary' />
+            </Card>
+          </Stack>
+          <Card>
+            <SearchComp data={data} query={query} setQuery={setQuery} />
+            <Box sx={{ height: 700 }}>
+              <DataGrid columns={columns} rows={filteredData} getRowId={item => item.name} />
+            </Box>
+          </Card>
+        </>
+      ) : (
+        <Loader />
+      )}
     </>
   )
 }

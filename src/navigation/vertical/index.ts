@@ -17,6 +17,11 @@ const navigation = (): VerticalNavItemsType => {
       title: 'Catalog',
       path: '/catalog',
       icon: 'mdi:abacus'
+    },
+    {
+      title: 'Consumers',
+      path: '/consumers',
+      icon: 'mdi:account-group'
     }
     // {
     //   path: '/acl',

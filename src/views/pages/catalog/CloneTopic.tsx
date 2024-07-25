@@ -35,7 +35,7 @@ export default function SimpleDialogDemo({ name }: Props) {
     if (cloneTopic.newName === '') {
       toast('New Name is required')
     } else {
-      cloneTopics(cloneTopic.oldName, cloneTopic.newName)
+      cloneTopics(name, cloneTopic.newName)
       setCloneTopic({
         oldName: '',
         newName: ''
@@ -53,7 +53,11 @@ export default function SimpleDialogDemo({ name }: Props) {
 
   return (
     <div>
-      <Button variant='text' sx={{ mr: 2, fontWeight: 401, fontSize: 13 }} onClick={() => handleClickOpen()}>
+      <Button
+        variant='text'
+        sx={{ mr: 2, fontWeight: 401, fontSize: 13, padding: 1 }}
+        onClick={() => handleClickOpen()}
+      >
         <svg xmlns='http://www.w3.org/2000/svg' width='1.3em' height='3em' viewBox='0 0 256 256'>
           <path
             fill='currentColor'

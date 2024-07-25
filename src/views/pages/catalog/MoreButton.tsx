@@ -8,7 +8,6 @@ import Fade from '@mui/material/Fade'
 import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
 import Divider from '@mui/material/Divider'
-import { useConnection } from 'src/context/ConnectionsContext'
 import { useTopic } from 'src/context/TopicsContext'
 import CloneTopic from './CloneTopic'
 import EditTopic from './EditTopic'
@@ -60,7 +59,7 @@ export default function PositionedPopper({ name }: Props) {
                       <Stack sx={{ marginBottom: -2, marginTop: -2 }}>
                         <Button
                           variant='text'
-                          sx={{ mr: 2, fontWeight: 401, fontSize: 13 }}
+                          sx={{ mr: 2, fontWeight: 401, fontSize: 13, padding: 0.2 }}
                           onClick={() => handleDelete()}
                         >
                           <svg xmlns='http://www.w3.org/2000/svg' width='1.3em' height='3em' viewBox='0 0 24 24'>
@@ -79,8 +78,8 @@ export default function PositionedPopper({ name }: Props) {
             )}
           </Popper>
         ) : null}
-        <Grid container justifyContent='flex-start'>
-          <Grid item container xs={6} alignItems='flex-end' direction='column'>
+        <Grid container alignItems='flex-end'>
+          <Grid item container xs={6} direction='column'>
             <Grid item>
               <Button onClick={handleClick('right-end')} sx={{ marginTop: -2, fontWeight: 1000, position: 'relative' }}>
                 ...
