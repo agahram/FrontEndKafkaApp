@@ -100,9 +100,9 @@ export default function PositionedPopper({ id, details, name }: Props) {
           )}
         </Popper>
         <Grid container justifyContent='flex-start'>
-          <Grid item container xs={6} alignItems='flex-end' direction='column'>
+          <Grid item container alignItems='flex-end' direction='column'>
             <Grid item>
-              <Button onClick={handleClick('right-end')} sx={{ marginTop: -2, fontWeight: 1000, position: 'relative' }}>
+              <Button onClick={handleClick('right-end')} sx={{ fontWeight: 1000 }}>
                 ...
               </Button>
             </Grid>

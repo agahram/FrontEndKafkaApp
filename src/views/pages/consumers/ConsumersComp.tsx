@@ -51,7 +51,11 @@ const columns: GridColDef[] = [
     field: 'topics',
     headerName: 'Topics',
     renderCell: ({ row }: any) => {
-      return <CustomChip label={row.assignedTopics} skin='light' color='primary' />
+      if (row.assignedTopics.length !== 0) {
+        return <CustomChip label={row.assignedTopics} skin='light' color='primary' />
+      } else {
+        return <CustomChip label='none' skin='light' color='primary' />
+      }
     }
   }
 ]

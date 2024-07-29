@@ -68,7 +68,7 @@ export default function NewConnection() {
     <>
       <Button
         variant='contained'
-        sx={{ mr: 3, color: 'white', marginLeft: 200, position: 'sticky' }}
+        sx={{ mr: 3, color: 'white', alignContent: 'flex-end', marginBottom: 2 }}
         onClick={() => handleClick()}
       >
         <svg xmlns='http://www.w3.org/2000/svg' width='2em' height='1.7em' viewBox='0 0 24 24'>
