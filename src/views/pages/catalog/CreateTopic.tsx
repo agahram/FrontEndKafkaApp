@@ -9,6 +9,7 @@ import Stack from '@mui/material/Stack'
 import { useState } from 'react'
 import Card from '@mui/material/Card'
 import { useTopic } from 'src/context/TopicsContext'
+import toast from 'react-hot-toast'
 
 export default function SimpleDialogDemo() {
   const { addTopic } = useTopic()
@@ -28,17 +29,27 @@ export default function SimpleDialogDemo() {
   }
 
   const handleTopicCreation = () => {
-    addTopic({
-      name: newTopic.name,
-      replicationFactor: newTopic.replicationFactor,
-      partitions: newTopic.partitions
-    })
-    setNewTopic({
-      name: '',
-      replicationFactor: 0,
-      partitions: 0
-    })
-    handleClose()
+    if (newTopic.name.length === 0) {
+      toast('Topic name is required')
+    }
+    if (Number(newTopic.replicationFactor) !== 1) {
+      toast('Replication factor should equal to 1')
+    }
+    if (Number(newTopic.partitions) === 0) {
+      toast('Partitions should be more than one')
+    } else {
+      addTopic({
+        name: newTopic.name,
+        replicationFactor: newTopic.replicationFactor,
+        partitions: newTopic.partitions
+      })
+      setNewTopic({
+        name: '',
+        replicationFactor: 0,
+        partitions: 0
+      })
+      handleClose()
+    }
   }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, key: string) => {

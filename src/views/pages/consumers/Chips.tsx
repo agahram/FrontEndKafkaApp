@@ -7,15 +7,13 @@ interface Props {
 }
 
 export default function Chips({ label }: Props) {
-  let color = ''
   if (label === 'stable') {
-    color = 'success'
+    return <CustomChip label='stable' skin='light' color='success' />
   } else if (label === 'empty') {
-    color = 'warning'
+    return <CustomChip label='empty' skin='light' color='warning' />
   } else if (label === 'rebalancing') {
-    color = 'primary'
+    return <CustomChip label='rebalancing' skin='light' color='primary' />
   } else if (label === 'dead') {
-    color = 'error'
+    return <CustomChip label='dead' skin='light' color='error' />
   }
-  return <CustomChip label={label} skin='light' color={color} />
 }

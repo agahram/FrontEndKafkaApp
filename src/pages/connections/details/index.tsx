@@ -8,7 +8,7 @@ import React, { useState } from 'react'
 import { useConnection } from 'src/context/ConnectionsContext'
 import { object } from 'yup'
 import Breadcrumb from 'src/views/pages/connections/details/Breadcrumb'
-import SearchComp from 'src/views/pages/connections/details/SearchComp'
+import SearchComp from 'src/views/pages/catalog/SearchComp'
 
 // ** Data Import
 
@@ -51,7 +51,7 @@ export default function index() {
     <Card>
       <SearchComp data={data} query={query} setQuery={setQuery} />
       <CardHeader title={<Breadcrumb />} />
-      <Box sx={{ height: 700 }}>
+      <Box sx={{ height: 800 }}>
         <DataGrid columns={columns} rows={filteredData} getRowId={item => item.name} />
       </Box>
     </Card>

@@ -116,8 +116,8 @@ const TopicProvider = ({ children }: Props) => {
         }
       })
       let data = await response.json()
-      setTopics(data)
       setIsLoading(false)
+      setTopics(data)
       return data
     } catch (err: any) {
       console.log(err.message)

@@ -35,15 +35,4 @@ const DialogExamples = () => {
   )
 }
 
-// export const getStaticProps: GetStaticProps = async () => {
-//   const res = await axios.get('/')
-//   const data: PricingDataType = res.data
-
-//   return {
-//     props: {
-//       apiPricingPlanData: data.pricingPlans
-//     }
-//   }
-// }
-
 export default DialogExamples
