@@ -19,7 +19,7 @@ const columns: GridColDef[] = [
   {
     field: 'name',
     headerName: 'Topic',
-    width: 280,
+    width: 300,
     renderCell: ({ row }: any) => {
       // return <a href='./configuration'>{row.name}</a>
       return <TopicConfig name={row.name} />
@@ -29,12 +29,12 @@ const columns: GridColDef[] = [
   {
     field: 'replicationFactor',
     headerName: 'Replicas',
-    width: 180
+    width: 250
   },
   {
     field: 'topicSize',
     headerName: 'Topic Size',
-    width: 180
+    width: 420
   },
   {
     field: 'more',

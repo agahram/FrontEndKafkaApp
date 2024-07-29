@@ -66,19 +66,21 @@ export default function NewConnection() {
   }
   return (
     <>
-      <Button
-        variant='contained'
-        sx={{ mr: 3, color: 'white', alignContent: 'flex-end', marginBottom: 2 }}
-        onClick={() => handleClick()}
-      >
-        <svg xmlns='http://www.w3.org/2000/svg' width='2em' height='1.7em' viewBox='0 0 24 24'>
-          <path
-            fill='currentColor'
-            d='M18 12.998h-5v5a1 1 0 0 1-2 0v-5H6a1 1 0 0 1 0-2h5v-5a1 1 0 0 1 2 0v5h5a1 1 0 0 1 0 2'
-          ></path>
-        </svg>
-        Add Connection
-      </Button>
+      <Box sx={{ display: 'flex', alignItems: 'right', justifyContent: 'right' }}>
+        <Button
+          variant='contained'
+          sx={{ mr: 3, color: 'white', alignContent: 'flex-end', marginBottom: 2, width: 280 }}
+          onClick={() => handleClick()}
+        >
+          <svg xmlns='http://www.w3.org/2000/svg' width='2em' height='1.7em' viewBox='0 0 24 24'>
+            <path
+              fill='currentColor'
+              d='M18 12.998h-5v5a1 1 0 0 1-2 0v-5H6a1 1 0 0 1 0-2h5v-5a1 1 0 0 1 2 0v5h5a1 1 0 0 1 0 2'
+            ></path>
+          </svg>
+          Add Connection
+        </Button>
+      </Box>
       <Dialog
         fullWidth
         open={show}

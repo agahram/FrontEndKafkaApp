@@ -79,9 +79,9 @@ export default function PositionedPopper({ name }: Props) {
           </Popper>
         ) : null}
         <Grid container alignItems='flex-end'>
-          <Grid item container xs={6} direction='column'>
+          <Grid item container direction='column'>
             <Grid item>
-              <Button onClick={handleClick('right-end')} sx={{ marginTop: -2, fontWeight: 1000, position: 'relative' }}>
+              <Button onClick={handleClick('right-end')} sx={{ marginTop: -2, fontWeight: 1000 }}>
                 ...
               </Button>
             </Grid>
