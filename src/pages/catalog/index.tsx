@@ -106,7 +106,7 @@ export default function index() {
         <ImportFile />
         <CreateTopic />
       </Stack>
-      <SearchComp data={data} query={query} setQuery={setQuery} />
+      <SearchComp setQuery={setQuery} />
       {isLoading ? (
         <Loader />
       ) : (

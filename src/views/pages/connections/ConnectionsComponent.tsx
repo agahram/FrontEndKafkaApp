@@ -116,9 +116,6 @@ const DialogEditUserInfo = ({ name, details, id }: Props) => {
             <Loader />
           ) : testConnection && isConnected ? (
             <Stack spacing={1.5}>
-              {/* <Button variant='outlined' sx={{ mr: 2, fontWeight: 401 }} fullWidth>
-                View cluster details
-              </Button> */}
               <ViewCluster name={name} />
               <Button
                 variant='contained'

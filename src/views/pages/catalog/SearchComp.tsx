@@ -6,12 +6,10 @@ import InputAdornment from '@mui/material/InputAdornment'
 import React, { SetStateAction, useState } from 'react'
 
 interface Props {
-  data: any[]
-  query: string
   setQuery: (e: SetStateAction<string>) => void
 }
 
-export default function SearchComp({ data, query, setQuery }: Props) {
+export default function SearchComp({ setQuery }: Props) {
   //   const [query, setQuery] = useState('')
 
   const handleChange = (e: { target: { value: React.SetStateAction<string> } }) => {

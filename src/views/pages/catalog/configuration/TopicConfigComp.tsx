@@ -132,7 +132,7 @@ export default function TopicConfigComp({ topicName }: Props) {
             </Card>
           </Stack>
           <Card>
-            <SearchComp data={data} query={query} setQuery={setQuery} />
+            <SearchComp setQuery={setQuery} />
             <Box sx={{ height: 700 }}>
               <DataGrid columns={columns} rows={filteredData} getRowId={item => item.name} />
             </Box>

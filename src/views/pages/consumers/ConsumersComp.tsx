@@ -66,72 +66,78 @@ export default function ConsumersComp() {
     rebalancing: 0,
     dead: 0
   })
-  const [totalLag, setTotallLag] = useState(0)
-  let data: any = []
+  const [totalLag, setTotalLag] = useState(0)
   useEffect(() => {
     getConsumers()
   }, [])
-  console.log('STATE', state)
-
-  console.log('******')
 
   useEffect(() => {
     if (consumers !== null && typeof consumers === 'object') {
       const val = Object.values(consumers)
-      setState({
+
+      let newState = {
         stable: 0,
         empty: 0,
         rebalancing: 0,
         dead: 0
-      })
-
-      data = val.map((obj: any) => {
+      }
+      let newTotalLag = 0
+      let newData = val.map((obj: any) => {
         if (obj.state === 'Stable') {
-          setState({ ...state, stable: state.stable + 1 })
+          newState.stable += 1
         } else if (obj.state === 'Empty') {
-          setState({ ...state, empty: state.empty + 1 })
+          newState.empty += 1
         } else if (obj.state === 'Rebalancing') {
-          setState({ ...state, rebalancing: state.rebalancing + 1 })
+          newState.rebalancing += 1
         } else if (obj.state === 'Dead') {
-          setState({ ...state, dead: state.dead + 1 })
+          newState.dead += 1
         }
-        setTotallLag(totalLag + obj.overallLag)
-        setCurrentData([
-          {
-            group: obj.group,
-            state: obj.state,
-            consumHostId: obj.host + ':' + obj.port + ' - ' + obj.brokerId,
-            overallLag: obj.overallLag,
-            assignedTopics: obj.assignedTopics
-          }
-        ])
-
-        return obj
+        newTotalLag += obj.overallLag
+        return {
+          group: obj.group,
+          state: obj.state,
+          consumHostId: `${obj.host}:${obj.port}-${obj.brokerId}`,
+          overallLag: obj.overallLag,
+          assignedTopics: obj.assignedTopics
+        }
       })
+
+      setCurrentData(newData)
+      setState(newState)
+      setTotalLag(newTotalLag)
     }
   }, [consumers])
 
-  // const filteredData = consumers.filter(
-  //   (consumer: { group: string; state: string; overallLag: number; consumHostId: string }) => {
-  //     return consumer.group.toLowerCase().includes(query.toLowerCase())
-  //   }
-  // )
-  // useEffect(() => {
-  //   let search_data = consumers.filter(
-  //     (consumer: { group: string; state: string; overallLag: number; consumHostId: string }) => {
-  //       consumer.group.toLowerCase().includes(query.toLowerCase())
-  //     }
-  //   )
-  //   setCurrentData(search_data)
-  // }, [consumers])
+  useEffect(() => {
+    let search_data = consumers.filter((consumer: any) => {
+      return consumer.group.toLowerCase().includes(query.toLowerCase())
+    })
+    let newData = search_data.map((obj: any) => {
+      return {
+        group: obj.group,
+        state: obj.state,
+        consumHostId: `${obj.host}:${obj.port}-${obj.brokerId}`,
+        overallLag: obj.overallLag,
+        assignedTopics: obj.assignedTopics
+      }
+    })
+    setCurrentData(newData)
+  }, [query])
 
   function handleShow(consumerState: string) {
-    let show_data = consumers.filter(
-      (consumer: { group: string; state: string; overallLag: number; consumHostId: string }) =>
-        consumer.state === consumerState
-    )
+    let show_data = consumers.filter((consumer: any) => consumer.state === consumerState)
+    console.log(show_data)
+    let newData = show_data.map((obj: any) => {
+      return {
+        group: obj.group,
+        state: obj.state,
+        consumHostId: `${obj.host}:${obj.port}-${obj.brokerId}`,
+        overallLag: obj.overallLag,
+        assignedTopics: obj.assignedTopics
+      }
+    })
 
-    setCurrentData(show_data)
+    setCurrentData(newData)
   }
 
   return (
@@ -215,7 +221,7 @@ export default function ConsumersComp() {
             </Card>
           </Stack>
           <Card>
-            <SearchComp data={data} query={query} setQuery={setQuery} />
+            <SearchComp setQuery={setQuery} />
             <Box sx={{ height: 700 }}>
               <DataGrid columns={columns} rows={currentData} getRowId={item => item.group} />
             </Box>
