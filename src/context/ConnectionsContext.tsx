@@ -12,6 +12,7 @@ interface Props {
 }
 interface InterfaceConnection {
   connections: Connection[] | null
+  getConnections: () => void
   addConnections: (connection: Connection) => void
   deleteConnection: (id: number) => void
   editConnection: (connection: Connection) => void
@@ -24,6 +25,7 @@ interface InterfaceConnection {
 
 const InitialValue = {
   connections: [],
+  getConnections: () => null,
   addConnections: (connection: Connection) => null,
   deleteConnection: (id: number) => null,
   editConnection: (connection: Connection) => null,
@@ -82,10 +84,6 @@ const ConnectionProvider = ({ children }: Props) => {
       console.log(err.message)
     }
   }
-
-  useEffect(() => {
-    getConnections()
-  }, [])
 
   const deleteConnection = async (id: number) => {
     try {
@@ -149,6 +147,7 @@ const ConnectionProvider = ({ children }: Props) => {
     <ConnectionContext.Provider
       value={{
         connections,
+        getConnections,
         deleteConnection,
         editConnection,
         addConnections,

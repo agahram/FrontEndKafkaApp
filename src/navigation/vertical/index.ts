@@ -19,6 +19,11 @@ const navigation = (): VerticalNavItemsType => {
       icon: 'mdi:abacus'
     },
     {
+      title: 'Browser',
+      path: '/browser',
+      icon: 'mdi:account-details'
+    },
+    {
       title: 'Consumers',
       path: '/consumers',
       icon: 'mdi:account-group'

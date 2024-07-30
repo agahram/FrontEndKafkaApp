@@ -7,6 +7,7 @@ export interface Topic {
   name: string
   replicationFactor: number
   partitions: number
+  topicSize: string
   id?: number
 }
 
@@ -123,10 +124,6 @@ const TopicProvider = ({ children }: Props) => {
       console.log(err.message)
     }
   }
-
-  useEffect(() => {
-    getTopics()
-  }, [])
 
   const getTopic = async (topicName: string) => {
     console.log('topic name--', topicName)

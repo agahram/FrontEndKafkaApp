@@ -3,8 +3,8 @@ import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import Stack from '@mui/material/Stack'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import React, { useState } from 'react'
-import { useTopic } from 'src/context/TopicsContext'
+import React, { useEffect, useState } from 'react'
+import { Topic, useTopic } from 'src/context/TopicsContext'
 import CreateTopic from 'src/views/pages/catalog/CreateTopic'
 import Loader from 'src/views/pages/catalog/Loader'
 import MoreButton from 'src/views/pages/catalog/MoreButton'
@@ -25,7 +25,7 @@ const columns: GridColDef[] = [
       return <TopicConfig name={row.name} />
     }
   },
-  { field: 'partition', headerName: 'Partition', width: 280 },
+  { field: 'partitions', headerName: 'Partition', width: 280 },
   {
     field: 'replicationFactor',
     headerName: 'Replicas',
@@ -49,15 +49,21 @@ const columns: GridColDef[] = [
 
 export default function index() {
   const [query, setQuery] = useState('')
-  const { topics, isLoading } = useTopic()
-  let data: any = []
+  const { topics, isLoading, getTopics } = useTopic()
+  const [currentData, setCurrentData] = useState<Topic[]>([])
+
   let size = 0
   let sizeName = ''
   let count = 0
-  if (topics !== null && typeof topics === 'object') {
-    const val = Object.values(topics)
-    data = val.map((obj: any) => {
-      function topicSizeFunc() {
+
+  useEffect(() => {
+    getTopics()
+  }, [])
+  useEffect(() => {
+    if (topics !== null && typeof topics === 'object') {
+      let data: any = []
+      const val = Object.values(topics)
+      data = val.map((obj: any) => {
         count = 0
         size = 0
         sizeName = ''
@@ -68,41 +74,65 @@ export default function index() {
           size /= 1000
           count += 1
         }
-        // return size
         if (count == 0) {
           sizeName = 'bytes'
-          return size + ' ' + sizeName
         } else if (count == 1) {
           sizeName = 'kilobytes'
-          return size + ' ' + sizeName
         } else if (count == 2) {
           sizeName = 'megabytes'
-          return size + ' ' + sizeName
         } else if (count == 3) {
           sizeName = 'gigabytes'
-          return size + ' ' + sizeName
         }
+        return {
+          name: obj.name,
+          replicationFactor: obj.replicationFactor,
+          partitions: obj.partitions.length,
+          topicSize: `${size} ${sizeName}`
+        }
+      })
+      setCurrentData(data)
+    } else {
+      console.log('obj is null or undefined')
+    }
+  }, [topics])
+  useEffect(() => {
+    let search_data = topics.filter((topic: any) => {
+      return topic.name.toLowerCase().includes(query.toLowerCase())
+    })
+    let newData = search_data.map((obj: any) => {
+      count = 0
+      size = 0
+      sizeName = ''
+      for (let i = 0; i < obj.partitions.length; i++) {
+        size += obj.partitions[i].size
+      }
+      while (size > 1000) {
+        size /= 1000
+        count += 1
+      }
+
+      if (count == 0) {
+        sizeName = 'bytes'
+      } else if (count == 1) {
+        sizeName = 'kilobytes'
+      } else if (count == 2) {
+        sizeName = 'megabytes'
+      } else if (count == 3) {
+        sizeName = 'gigabytes'
       }
       return {
         name: obj.name,
         replicationFactor: obj.replicationFactor,
-        partition: obj.partitions.length,
-        topicSize: topicSizeFunc()
+        partitions: obj.partitions.length,
+        topicSize: `${size} ${sizeName}`
       }
     })
-  } else {
-    console.log('obj is null or undefined')
-  }
-  console.log(data)
-  const filteredData = data.filter(
-    (topic: { name: string; replicationFactor: number; partitions: number; topicSize: string }) => {
-      return topic.name.toLowerCase().includes(query.toLowerCase())
-    }
-  )
+    setCurrentData(newData)
+  }, [query])
   return (
     <>
       <Stack direction='row' spacing={1} sx={{ display: 'flex', alignItems: 'right', justifyContent: 'right' }}>
-        <ExportFile data={data} />
+        <ExportFile data={currentData} />
         <ImportFile />
         <CreateTopic />
       </Stack>
@@ -114,7 +144,7 @@ export default function index() {
           <Box sx={{ height: 700 }}>
             <DataGrid
               columns={columns}
-              rows={filteredData}
+              rows={currentData}
               initialState={{
                 pagination: {
                   paginationModel: { page: 0, pageSize: 50 }

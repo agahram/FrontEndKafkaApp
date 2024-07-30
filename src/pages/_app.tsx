@@ -61,6 +61,7 @@ import '../../styles/globals.css'
 import { ConnectionProvider } from 'src/context/ConnectionsContext'
 import { TopicProvider } from 'src/context/TopicsContext'
 import { ConsumerProvider } from 'src/context/ConsumersContext'
+import { BrowserProvider } from 'src/context/BrowserContext'
 
 // ** Extend App Props with Emotion
 type ExtendedAppProps = AppProps & {
@@ -133,22 +134,27 @@ const App = (props: ExtendedAppProps) => {
           <ConnectionProvider>
             <TopicProvider>
               <ConsumerProvider>
-                <SettingsConsumer>
-                  {({ settings }) => {
-                    return (
-                      <ThemeComponent settings={settings}>
-                        <Guard authGuard={authGuard} guestGuard={guestGuard}>
-                          <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard} authGuard={authGuard}>
-                            {getLayout(<Component {...pageProps} />)}
-                          </AclGuard>
-                        </Guard>
-                        <ReactHotToast>
-                          <Toaster position={settings.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />
-                        </ReactHotToast>
-                      </ThemeComponent>
-                    )
-                  }}
-                </SettingsConsumer>
+                <BrowserProvider>
+                  <SettingsConsumer>
+                    {({ settings }) => {
+                      return (
+                        <ThemeComponent settings={settings}>
+                          <Guard authGuard={authGuard} guestGuard={guestGuard}>
+                            <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard} authGuard={authGuard}>
+                              {getLayout(<Component {...pageProps} />)}
+                            </AclGuard>
+                          </Guard>
+                          <ReactHotToast>
+                            <Toaster
+                              position={settings.toastPosition}
+                              toastOptions={{ className: 'react-hot-toast' }}
+                            />
+                          </ReactHotToast>
+                        </ThemeComponent>
+                      )
+                    }}
+                  </SettingsConsumer>
+                </BrowserProvider>
               </ConsumerProvider>
             </TopicProvider>
           </ConnectionProvider>

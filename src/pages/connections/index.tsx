@@ -5,18 +5,18 @@ import { GetStaticProps, InferGetStaticPropsType } from 'next/types'
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
 
-// ** Third Party Components
-import axios from 'axios'
-
 // ** Type Import
-import { PricingDataType } from 'src/@core/components/plan-details/types'
 import ConnectionsComponent from 'src/views/pages/connections/ConnectionsComponent'
 import NewConnectionButton from 'src/views/pages/connections/NewConnectionButton'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useConnection } from 'src/context/ConnectionsContext'
 
 const DialogExamples = () => {
-  const { connections } = useConnection()
+  const { connections, getConnections } = useConnection()
+
+  useEffect(() => {
+    getConnections()
+  }, [])
   return (
     <>
       <NewConnectionButton />

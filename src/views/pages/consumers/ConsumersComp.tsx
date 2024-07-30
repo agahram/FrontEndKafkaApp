@@ -132,7 +132,16 @@ export default function ConsumersComp() {
 
   function handleShow(consumerState: string) {
     if (consumerState === 'All') {
-      setCurrentData(consumers)
+      let newData = consumers.map((obj: any) => {
+        return {
+          group: obj.group,
+          state: obj.state,
+          consumHostId: `${obj.host}:${obj.port}-${obj.brokerId}`,
+          overallLag: obj.overallLag,
+          assignedTopics: obj.assignedTopics
+        }
+      })
+      setCurrentData(newData)
     } else {
       let show_data = consumers.filter((consumer: any) => consumer.state === consumerState)
       console.log(show_data)
