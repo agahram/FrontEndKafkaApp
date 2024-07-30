@@ -27,7 +27,7 @@ const columns: GridColDef[] = [
       } else if (row.state === 'Empty') {
         return <CustomChip label='empty' skin='light' color='warning' />
       } else if (row.state === 'Rebalancing') {
-        return <CustomChip label='rebalancing' skin='light' color='primary' />
+        return <CustomChip label='rebalancing' skin='light' color='info' />
       } else if (row.state === 'Dead') {
         return <CustomChip label='dead' skin='light' color='error' />
       }
@@ -52,7 +52,9 @@ const columns: GridColDef[] = [
     headerName: 'Topics',
     renderCell: ({ row }: any) => {
       if (row.assignedTopics.length !== 0) {
-        return <CustomChip label={row.assignedTopics} skin='light' color='primary' />
+        for (let i = 0; i < row.assignedTopics.length; i++) {
+          return <CustomChip label={row.assignedTopics} skin='light' color='primary' />
+        }
       } else {
         return <CustomChip label='none' skin='light' color='primary' />
       }
@@ -129,19 +131,23 @@ export default function ConsumersComp() {
   }, [query])
 
   function handleShow(consumerState: string) {
-    let show_data = consumers.filter((consumer: any) => consumer.state === consumerState)
-    console.log(show_data)
-    let newData = show_data.map((obj: any) => {
-      return {
-        group: obj.group,
-        state: obj.state,
-        consumHostId: `${obj.host}:${obj.port}-${obj.brokerId}`,
-        overallLag: obj.overallLag,
-        assignedTopics: obj.assignedTopics
-      }
-    })
+    if (consumerState === 'All') {
+      setCurrentData(consumers)
+    } else {
+      let show_data = consumers.filter((consumer: any) => consumer.state === consumerState)
+      console.log(show_data)
+      let newData = show_data.map((obj: any) => {
+        return {
+          group: obj.group,
+          state: obj.state,
+          consumHostId: `${obj.host}:${obj.port}-${obj.brokerId}`,
+          overallLag: obj.overallLag,
+          assignedTopics: obj.assignedTopics
+        }
+      })
 
-    setCurrentData(newData)
+      setCurrentData(newData)
+    }
   }
 
   return (
@@ -150,11 +156,27 @@ export default function ConsumersComp() {
         <Loader />
       ) : (
         <>
-          <Card sx={{ padding: 2.5, marginBottom: 2 }}>
-            <h2>Consumers</h2>
+          <Card sx={{ padding: 1, marginBottom: 2 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}
+            >
+              <h2>Consumers</h2>
+              <Button
+                variant='contained'
+                color='primary'
+                sx={{ height: 25, width: 200 }}
+                onClick={() => handleShow('All')}
+              >
+                Show All
+              </Button>
+            </Box>
           </Card>
           <Stack direction='row' spacing={7} sx={{ marginBottom: 2, display: 'flex' }}>
-            <Card sx={{ width: 300, padding: 4 }}>
+            <Card sx={{ width: 300, padding: 3 }}>
               <Box
                 sx={{
                   display: 'flex',
@@ -169,7 +191,7 @@ export default function ConsumersComp() {
               </Box>
               <CustomChip label={state.stable} skin='light' color='success' />
             </Card>
-            <Card sx={{ width: 300, padding: 4 }}>
+            <Card sx={{ width: 300, padding: 3 }}>
               <Box
                 sx={{
                   display: 'flex',
@@ -184,7 +206,7 @@ export default function ConsumersComp() {
               </Box>
               <CustomChip label={state.empty} skin='light' color='warning' />
             </Card>
-            <Card sx={{ width: 300, padding: 4 }}>
+            <Card sx={{ width: 300, padding: 3 }}>
               <Box
                 sx={{
                   display: 'flex',
@@ -202,9 +224,9 @@ export default function ConsumersComp() {
                   Show
                 </Button>
               </Box>
-              <CustomChip label={state.rebalancing} skin='light' color='primary' />
+              <CustomChip label={state.rebalancing} skin='light' color='info' />
             </Card>
-            <Card sx={{ width: 300, padding: 4 }}>
+            <Card sx={{ width: 300, padding: 3 }}>
               <Box
                 sx={{
                   display: 'flex',
@@ -219,7 +241,7 @@ export default function ConsumersComp() {
               </Box>
               <CustomChip label={state.dead} skin='light' color='error' />
             </Card>
-            <Card sx={{ width: 300, padding: 4 }}>
+            <Card sx={{ width: 300, padding: 3 }}>
               <p style={{ color: '#787eff', fontWeight: 600 }}>Total lag</p>
               <CustomChip label={totalLag} skin='light' color='warning' />
             </Card>

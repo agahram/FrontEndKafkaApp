@@ -41,15 +41,6 @@ const ConsumerProvider = ({ children }: Props) => {
         }
       })
       let data = await response.json()
-
-      // setConsumers([
-      //   ...data,
-      //   {
-      //     consumHostId: data.map((el: { host: string; port: number; brokerId: number }) => {
-      //       return el.host + ':' + el.port + ' - ' + el.brokerId
-      //     })
-      //   }
-      // ])
       setConsumers(data)
 
       setIsLoading(false)
