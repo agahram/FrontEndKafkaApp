@@ -34,7 +34,7 @@ const columns: GridColDef[] = [
   {
     field: 'topicSize',
     headerName: 'Topic Size',
-    width: 420
+    width: 250
   },
   {
     field: 'more',
