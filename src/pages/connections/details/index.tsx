@@ -49,7 +49,7 @@ export default function index() {
   })
   return (
     <Card>
-      <SearchComp data={data} query={query} setQuery={setQuery} />
+      <SearchComp setQuery={setQuery} />
       <CardHeader title={<Breadcrumb />} />
       <Box sx={{ height: 800 }}>
         <DataGrid columns={columns} rows={filteredData} getRowId={item => item.name} />

@@ -3,16 +3,20 @@ import { Topic } from './TopicsContext'
 
 export interface Browser {
   timestamp: string
-  partition: number
-  key: number
-  value: number
+  partitions: number
+  key: string
+  value: string
   offset: number
 }
 
 interface InterfaceBrowser {
   browsers: Browser[]
   browserTopics: Topic[]
+  produceMessage: (topicName: string, key: string, value: string, headers: { key: string; value: string }) => void
   searchByPartitions: (topicName: string, partition: number) => void
+  searchByKeys: (searchRequest: string[], topicName: string, checked: boolean) => void
+  searchByHeaders: (searchRequest: string[], topicName: string, checked: boolean) => void
+  searchByDatetime: (topicName: string, time1: any, time2: any) => void
   handlePagination: (pagination: { page: number; pageSize: number }, topicName: string) => void
   consumeMessages: (topicName: string) => void
   getBrowserTopics: () => void
@@ -28,7 +32,11 @@ interface Props {
 const InitialValue = {
   browsers: [],
   browserTopics: [],
+  produceMessage: (topicName: string, key: string, value: string, headers: { key: string; value: string }) => null,
   searchByPartitions: (topicName: string, partition: number) => null,
+  searchByKeys: (searchRequest: string[], topicName: string, checked: boolean) => null,
+  searchByHeaders: (searchRequest: string[], topicName: string, checked: boolean) => null,
+  searchByDatetime: (topicName: string, time1: any, time2: any) => null,
   handlePagination: (pagination: { page: number; pageSize: number }, topicName: string) => null,
   consumeMessages: (topicName: string) => null,
   getBrowserTopics: () => null,
@@ -49,7 +57,7 @@ const BrowserProvider = ({ children }: Props) => {
   const getBrowserTopics = async () => {
     try {
       setIsLoading(true)
-      const response = await fetch(`http://localhost:5144/api/KafkaAdmin/get-topics?hideInternal=true`, {
+      const response = await fetch(`http://localhost:5000/api/KafkaAdmin/get-topics?hideInternal=true`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -63,22 +71,26 @@ const BrowserProvider = ({ children }: Props) => {
     }
   }
 
-  const produceMessage = async (topicName: string, key: string, value: string) => {
+  const produceMessage = async (
+    topicName: string,
+    key: string,
+    value: string,
+    headers: { key: string; value: string }
+  ) => {
     try {
-      setIsLoading(true)
-      const response = await fetch(`http://localhost:5144/api/KafkaAdmin/produce-message?topic=${topicName}`, {
+      const response = await fetch(`http://localhost:5000/api/KafkaAdmin/produce-message`, {
         method: 'POST',
         body: JSON.stringify({
-          topicName: topicName,
+          headers: [headers],
           key: key,
-          value: value
+          value: value,
+          topic: topicName
         }),
         headers: {
           'Content-Type': 'application/json'
         }
       })
       let data = await response.json()
-      setIsLoading(false)
     } catch (err: any) {
       console.log(err.message)
     }
@@ -89,7 +101,7 @@ const BrowserProvider = ({ children }: Props) => {
 
     try {
       const response = await fetch(
-        `http://localhost:5144/api/KafkaAdmin/get-specific-pages?topic=${topicName}&pageSize=${pagination.pageSize}&pageNumber=${pagination.page}
+        `http://localhost:5000/api/KafkaAdmin/get-specific-pages?topic=${topicName}&pageSize=${pagination.pageSize}&pageNumber=${pagination.page}
       `,
         {
           method: 'GET'
@@ -106,7 +118,80 @@ const BrowserProvider = ({ children }: Props) => {
     try {
       setSearchLoad(true)
       const response = await fetch(
-        `http://localhost:5144/api/KafkaAdmin/search-by-partitions?topic=${topicName}&partition=${partition}`,
+        `http://localhost:5000/api/KafkaAdmin/search-by-partitions?topic=${topicName}&partition=${partition}`,
+        {
+          method: 'GET'
+        }
+      )
+      let data = await response.json()
+      setBrowsers(data)
+      setSearchLoad(false)
+    } catch (err: any) {
+      console.log(err.message)
+    }
+  }
+
+  const searchByKeys = async (searchRequest: string[], topicName: string, checked: boolean) => {
+    try {
+      setSearchLoad(true)
+      let searchOption = 0
+      if (checked) {
+        searchOption = 1
+      } else {
+        searchOption = 2
+      }
+      const response = await fetch(`http://localhost:5000/api/KafkaAdmin/search-by-keys`, {
+        method: 'POST',
+        body: JSON.stringify({
+          listOfKeys: searchRequest,
+          topic: topicName,
+          searchOption: searchOption
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      let data = await response.json()
+      setBrowsers(data)
+      setSearchLoad(false)
+    } catch (err: any) {
+      console.log(err.message)
+    }
+  }
+
+  const searchByHeaders = async (searchRequest: string[], topicName: string, checked: boolean) => {
+    try {
+      setSearchLoad(true)
+      let searchOption = 0
+      if (checked) {
+        searchOption = 1
+      } else {
+        searchOption = 2
+      }
+      const response = await fetch(`http://localhost:5000/api/KafkaAdmin/search-by-headers`, {
+        method: 'POST',
+        body: JSON.stringify({
+          listOfKeys: searchRequest,
+          topic: topicName,
+          searchOption: searchOption
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      let data = await response.json()
+      setBrowsers(data)
+      setSearchLoad(false)
+    } catch (err: any) {
+      console.log(err.message)
+    }
+  }
+
+  const searchByDatetime = async (topicName: string, time1: any, time2: any) => {
+    try {
+      setSearchLoad(true)
+      const response = await fetch(
+        `http://localhost:5000/api/KafkaAdmin/search-by-timestamps?time1=${time1}&time2=${time2}&topic=${topicName}`,
         {
           method: 'GET'
         }
@@ -123,7 +208,7 @@ const BrowserProvider = ({ children }: Props) => {
     try {
       setLoading(true)
       const response = await fetch(
-        `http://localhost:5144/api/KafkaAdmin/consume-messages-from-beginning?topicName=${topicName}`,
+        `http://localhost:5000/api/KafkaAdmin/consume-messages-from-beginning?topicName=${topicName}`,
         {
           method: 'GET',
           headers: {
@@ -145,7 +230,11 @@ const BrowserProvider = ({ children }: Props) => {
       value={{
         browsers,
         browserTopics,
+        produceMessage,
         searchByPartitions,
+        searchByKeys,
+        searchByHeaders,
+        searchByDatetime,
         handlePagination,
         consumeMessages,
         getBrowserTopics,

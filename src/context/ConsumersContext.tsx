@@ -34,7 +34,7 @@ const ConsumerProvider = ({ children }: Props) => {
   const getConsumers = async () => {
     try {
       setIsLoading(true)
-      const response = await fetch('http://localhost:5144/api/KafkaAdmin/get-consumer-groups', {
+      const response = await fetch('http://localhost:5000/api/KafkaAdmin/get-consumer-groups', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'

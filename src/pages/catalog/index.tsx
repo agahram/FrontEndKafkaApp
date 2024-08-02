@@ -49,7 +49,7 @@ const columns: GridColDef[] = [
 
 export default function index() {
   const [query, setQuery] = useState('')
-  const { topics, isLoading, getTopics } = useTopic()
+  const { topics, isLoading, getTopics, getTopicSize, topicSize, loadingTopicSize } = useTopic()
   const [currentData, setCurrentData] = useState<Topic[]>([])
 
   let size = 0
@@ -59,6 +59,14 @@ export default function index() {
   useEffect(() => {
     getTopics()
   }, [])
+  console.log(topics)
+
+  console.log('-----', topicSize)
+
+  useEffect(() => {
+    getTopicSize()
+  }, [isLoading])
+
   useEffect(() => {
     if (topics !== null && typeof topics === 'object') {
       let data: any = []
@@ -67,9 +75,12 @@ export default function index() {
         count = 0
         size = 0
         sizeName = ''
-        for (let i = 0; i < obj.partitions.length; i++) {
-          size += obj.partitions[i].size
+        let sizeObj = topicSize.find(i => i.name === obj.name)
+
+        for (let i = 0; i < sizeObj?.partitions.length!; i++) {
+          size += sizeObj!.partitions[i].size
         }
+
         while (size > 1000) {
           size /= 1000
           count += 1
@@ -94,7 +105,7 @@ export default function index() {
     } else {
       console.log('obj is null or undefined')
     }
-  }, [topics])
+  }, [topics, topicSize])
   useEffect(() => {
     let search_data = topics.filter((topic: any) => {
       return topic.name.toLowerCase().includes(query.toLowerCase())

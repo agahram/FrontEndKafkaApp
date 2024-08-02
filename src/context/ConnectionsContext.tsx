@@ -47,7 +47,7 @@ const ConnectionProvider = ({ children }: Props) => {
     // async function fetchConnections() {
     console.log(connection)
     try {
-      const response = await fetch('http://localhost:5144/api/KafkaCluster/create-connection', {
+      const response = await fetch('http://localhost:5000/api/KafkaCluster/create-connection', {
         method: 'POST',
         body: JSON.stringify(connection),
         headers: {
@@ -71,7 +71,7 @@ const ConnectionProvider = ({ children }: Props) => {
 
   const getConnections = async () => {
     try {
-      const response = await fetch('http://localhost:5144/api/KafkaCluster/get-connections', {
+      const response = await fetch('http://localhost:5000/api/KafkaCluster/get-connections', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -87,7 +87,7 @@ const ConnectionProvider = ({ children }: Props) => {
 
   const deleteConnection = async (id: number) => {
     try {
-      const response = await fetch(`http://localhost:5144/api/KafkaCluster/delete-connection?id=${id}`, {
+      const response = await fetch(`http://localhost:5000/api/KafkaCluster/delete-connection?id=${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
@@ -102,7 +102,7 @@ const ConnectionProvider = ({ children }: Props) => {
   const checkConnection = async (bootStrapServer: string) => {
     // console.log(bootStrapServer)
 
-    const response = await fetch(`http://localhost:5144/api/KafkaCluster/check-connection?address=${bootStrapServer}`, {
+    const response = await fetch(`http://localhost:5000/api/KafkaCluster/check-connection?address=${bootStrapServer}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -112,7 +112,7 @@ const ConnectionProvider = ({ children }: Props) => {
   }
   const editConnection = async (connection: Connection) => {
     console.log(connection)
-    const response = await fetch('http://localhost:5144/api/KafkaCluster/update-connection', {
+    const response = await fetch('http://localhost:5000/api/KafkaCluster/update-connection', {
       method: 'PUT',
       body: JSON.stringify(connection),
       headers: {
@@ -126,7 +126,7 @@ const ConnectionProvider = ({ children }: Props) => {
 
   const getClusterInfo = async () => {
     try {
-      const response = await fetch('http://localhost:5144/api/KafkaCluster/get-cluster-info', {
+      const response = await fetch('http://localhost:5000/api/KafkaCluster/get-cluster-info', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'

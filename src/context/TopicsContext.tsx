@@ -7,13 +7,24 @@ export interface Topic {
   name: string
   replicationFactor: number
   partitions: number
-  topicSize: string
+  topicSize?: string
   id?: number
+}
+
+export interface TopicSize {
+  name: string
+  partitions: [{ partitionNumber: string; size: number }]
 }
 
 interface Partition {
   partitionNumber: string
   size: number
+}
+
+export interface Row {
+  entries: { [s: string]: unknown } | ArrayLike<unknown>
+  name: string
+  value: string
 }
 
 interface TopicConfig {
@@ -29,7 +40,8 @@ interface Props {
 interface InterfaceTopic {
   topics: Topic[]
   topic: TopicConfig | undefined
-  topicSize: undefined | { [s: string]: any } | ArrayLike<any>
+  topicSize: TopicSize[]
+  loadingTopicSize: boolean
   isLoading: boolean
   loadingConfig: boolean
   topicNameConfig: string | null
@@ -42,13 +54,15 @@ interface InterfaceTopic {
   cloneTopics: (oldName: string, newName: string) => void
   editTopics: (oldName: string, newName: string) => void
   getTopicConfig: (topicName: string) => void
-  rows: undefined | { [s: string]: any }
+  rows: Row[]
+  getTopicSize: () => void
 }
 
 const InitialValue = {
   topics: [],
   topic: undefined,
-  topicSize: undefined,
+  topicSize: [],
+  loadingTopicSize: false,
   isLoading: false,
   loadingConfig: false,
   topicNameConfig: null,
@@ -61,7 +75,8 @@ const InitialValue = {
   cloneTopics: (oldName: string, newName: string) => null,
   editTopics: (oldName: string, newName: string) => null,
   getTopicConfig: (topicName: string) => null,
-  rows: undefined
+  rows: [],
+  getTopicSize: () => null
 }
 
 const TopicContext = createContext<InterfaceTopic>(InitialValue)
@@ -74,18 +89,19 @@ const TopicProvider = ({ children }: Props) => {
     topicSize: 0,
     replicationFactor: 0
   })
-  const [rows, setRows] = useState()
+  const [rows, setRows] = useState<Row[]>([])
   const [topicNameConfig, setTopicNameConfig] = useState('')
-  const [topicSize, setTopicSize] = useState([])
+  const [topicSize, setTopicSize] = useState<TopicSize[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [loadingConfig, setLoadingConfig] = useState(false)
+  const [loadingTopicSize, setloadingTopicSize] = useState(false)
 
   const addTopic = async (topic: Topic) => {
     // async function fetchConnections() {
     console.log('topic add', topic)
     try {
       setIsLoading(true)
-      const response = await fetch('http://localhost:5144/api/KafkaAdmin/create-topic', {
+      const response = await fetch('http://localhost:5000/api/KafkaAdmin/create-topic', {
         method: 'POST',
         body: JSON.stringify(topic),
         headers: {
@@ -110,7 +126,7 @@ const TopicProvider = ({ children }: Props) => {
   const getTopics = async () => {
     try {
       setIsLoading(true)
-      const response = await fetch('http://localhost:5144/api/KafkaAdmin/get-topics?hideInternal=false', {
+      const response = await fetch('http://localhost:5000/api/KafkaAdmin/get-topics?hideInternal=false', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -129,11 +145,8 @@ const TopicProvider = ({ children }: Props) => {
     console.log('topic name--', topicName)
     try {
       setLoadingConfig(true)
-      const response = await fetch(`http://localhost:5144/api/KafkaAdmin/get-topic?topicName=${topicName}`, {
+      const response = await fetch(`http://localhost:5000/api/KafkaAdmin/get-topic?topicName=${topicName}`, {
         method: 'GET'
-        // headers: {
-        //   'Content-Type': 'application/json'
-        // }
       })
       let data = await response.json()
       setTopic(data)
@@ -146,7 +159,7 @@ const TopicProvider = ({ children }: Props) => {
   const deleteTopic = async (name: string) => {
     try {
       setIsLoading(true)
-      const response = await fetch(`http://localhost:5144/api/KafkaAdmin/delete-topic?topicName=${name}`, {
+      const response = await fetch(`http://localhost:5000/api/KafkaAdmin/delete-topic?topicName=${name}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
@@ -165,7 +178,7 @@ const TopicProvider = ({ children }: Props) => {
     try {
       setIsLoading(true)
       const response = await fetch(
-        `http://localhost:5144/api/KafkaAdmin/clone-topic?oldTopicName=${oldName}&newTopicName=${newName}`,
+        `http://localhost:5000/api/KafkaAdmin/clone-topic?oldTopicName=${oldName}&newTopicName=${newName}`,
         {
           method: 'POST',
           headers: {
@@ -193,7 +206,7 @@ const TopicProvider = ({ children }: Props) => {
     try {
       setIsLoading(true)
       const response = await fetch(
-        `http://localhost:5144/api/KafkaAdmin/rename-topic?oldTopicName=${oldName}&newTopicName=${newName}`,
+        `http://localhost:5000/api/KafkaAdmin/rename-topic?oldTopicName=${oldName}&newTopicName=${newName}`,
         {
           method: 'PUT',
           headers: {
@@ -219,11 +232,8 @@ const TopicProvider = ({ children }: Props) => {
     console.log('topic name--', topicName)
     try {
       setIsLoading(true)
-      const response = await fetch(`http://localhost:5144/api/KafkaAdmin/get-topic-config?topicName=${topicName}`, {
+      const response = await fetch(`http://localhost:5000/api/KafkaAdmin/get-topic-config?topicName=${topicName}`, {
         method: 'GET'
-        // headers: {
-        //   'Content-Type': 'application/json'
-        // }
       })
       let data = await response.json()
       setRows(data)
@@ -236,7 +246,7 @@ const TopicProvider = ({ children }: Props) => {
     // async function fetchConnections() {
     console.log('topics add', arr)
     try {
-      const response = await fetch('http://localhost:5144/api/KafkaAdmin/create-topics', {
+      const response = await fetch('http://localhost:5000/api/KafkaAdmin/create-topics', {
         method: 'POST',
         body: JSON.stringify(arr),
         headers: {
@@ -257,32 +267,30 @@ const TopicProvider = ({ children }: Props) => {
     }, 100)
   }
 
-  // const getTopicSize = async () => {
-  //   try {
-  //     const response = await fetch('http://localhost:5144/api/KafkaAdmin/get-topic-size', {
-  //       method: 'GET',
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       }
-  //     })
-  //     let data = await response.json()
-  //     setTopicSize(data)
-  //     console.log('topicSize:', topicSize)
-  //     return data
-  //   } catch (err: any) {
-  //     console.log(err.message)
-  //   }
-  // }
-  // // getTopicSize()
-  // useEffect(() => {
-  //   getTopicSize()
-  // }, [])
+  const getTopicSize = async () => {
+    try {
+      setloadingTopicSize(true)
+      const response = await fetch('http://localhost:5000/api/KafkaAdmin/get-topics-size-info?hideInternal=false', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      let data = await response.json()
+      setTopicSize(data)
+      setloadingTopicSize(false)
+      return data
+    } catch (err: any) {
+      console.log(err.message)
+    }
+  }
   return (
     <TopicContext.Provider
       value={{
         topics,
         topic,
         topicSize,
+        loadingTopicSize,
         isLoading,
         loadingConfig,
         topicNameConfig,
@@ -295,7 +303,8 @@ const TopicProvider = ({ children }: Props) => {
         cloneTopics,
         editTopics,
         getTopicConfig,
-        rows
+        rows,
+        getTopicSize
       }}
     >
       {children}

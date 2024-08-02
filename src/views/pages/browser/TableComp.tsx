@@ -1,39 +1,43 @@
 // ** React Imports
-import { useEffect, useState, useCallback, ChangeEvent } from 'react'
+import { useEffect, useState, useCallback, ChangeEvent, SetStateAction } from 'react'
 import Card from '@mui/material/Card'
-import { DataGrid, GridColDef, GridRenderCellParams, GridSortModel } from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridRenderCellParams, GridRowId, GridSortModel } from '@mui/x-data-grid'
 import { Browser, useBrowser } from 'src/context/BrowserContext'
 import Loader from '../catalog/Loader'
-import ServerSideToolbar from 'src/views/pages/browser/ServerSideToolbar'
+import Icon from 'src/@core/components/icon'
+import toast from 'react-hot-toast'
 import {
   Box,
   Button,
   CardHeader,
-  Icon,
+  Checkbox,
   IconButton,
+  ListItemText,
   MenuItem,
+  PopperPlacementType,
   Select,
   SelectChangeEvent,
   TextField
 } from '@mui/material'
+import SideComp from './SideComp'
 
 const columns: GridColDef[] = [
   {
     flex: 0.175,
-    minWidth: 200,
+    minWidth: 300,
     field: 'timestamp',
     headerName: 'Timestamp'
   },
   {
     flex: 0.175,
     type: 'number',
-    minWidth: 200,
+    minWidth: 120,
     headerName: 'Partitions',
     field: 'partitions'
   },
   {
     flex: 0.175,
-    minWidth: 200,
+    minWidth: 120,
     field: 'offset',
     headerName: 'Offset'
   },
@@ -56,7 +60,16 @@ interface Props {
 }
 
 const TableServerSide = ({ topicName }: Props) => {
-  const { browsers, consumeMessages, loading, searchByPartitions, searchLoad } = useBrowser()
+  const {
+    browsers,
+    consumeMessages,
+    loading,
+    searchByPartitions,
+    searchLoad,
+    searchByKeys,
+    searchByDatetime,
+    searchByHeaders
+  } = useBrowser()
   const [currentTopics, setCurrentTopics] = useState<Browser[]>([])
   const [paginationModel, setPaginationModel] = useState({
     pageSize: 7,
@@ -64,6 +77,24 @@ const TableServerSide = ({ topicName }: Props) => {
   })
   const [searchValue, setSearchValue] = useState<string>('')
   const [searchOption, setSearchOption] = useState<string>('')
+  const [searchClick, setSearchClick] = useState<boolean>(false)
+  const [checked, setChecked] = useState(false)
+  const [searchRequest, setSearchRequest] = useState<string[]>([])
+  const [idArr, setIdArr] = useState<string[]>([])
+  const [showSide, setShowSide] = useState(false)
+  const [placement, setPlacement] = useState<PopperPlacementType>()
+  const [selectionModel, setSelectionModel] = useState<GridRowId[]>([])
+
+  console.log('Browsers: ', currentTopics)
+
+  useEffect(() => {
+    idArr.length !== 0 ? setShowSide(true) : setShowSide(false)
+    setPlacement('left')
+  }, [idArr])
+
+  const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked(event.target.checked)
+  }
 
   useEffect(() => {
     if (topicName) {
@@ -72,22 +103,40 @@ const TableServerSide = ({ topicName }: Props) => {
   }, [topicName])
 
   useEffect(() => {
-    if (topicName && searchOption === 'partition' && searchValue) {
-      setTimeout(() => {
+    setSearchOption('')
+    setSearchValue('')
+    let array: SetStateAction<string[]> = []
+    if (topicName && searchValue) {
+      if (searchOption === 'partition') {
         searchByPartitions(topicName, Number(searchValue))
-      }, 2000)
-    }
-    if (topicName) {
-      consumeMessages(topicName)
-    }
-  }, [searchValue])
+      } else if (searchOption === 'key') {
+        toast('Write all the keys with , separator')
 
-  // useEffect(() => {
-  //   if (paginationModel && topicName) {
-  //     handlePagination(paginationModel, topicName)
-  //     console.log(browsers)
-  //   }
-  // }, [paginationModel])
+        let keySearchValue = searchValue.split(',')
+
+        array = keySearchValue
+
+        searchByKeys(keySearchValue, topicName, checked)
+      } else if (searchOption === 'timestamp') {
+        toast('Write time range with - separator')
+
+        let timestampSearchValue = searchValue.split('-')
+
+        array = timestampSearchValue
+
+        searchByDatetime(topicName, timestampSearchValue[0], timestampSearchValue[1])
+      } else if (searchOption === 'header') {
+        toast('Write headers value and keys with , separator')
+
+        let headerSearchValue = searchValue.split(',')
+
+        array = headerSearchValue
+        searchByHeaders(headerSearchValue, topicName, checked)
+      }
+      setSearchRequest(array)
+    }
+    setSearchClick(false)
+  }, [searchClick])
 
   useEffect(() => {
     let data: any = []
@@ -101,8 +150,6 @@ const TableServerSide = ({ topicName }: Props) => {
           offset: obj.offset
         }
       })
-      console.log(data)
-
       setCurrentTopics(data)
     }
   }, [browsers])
@@ -111,9 +158,8 @@ const TableServerSide = ({ topicName }: Props) => {
     setSearchValue(value)
   }
 
-  const handleSelectSearch = (value: string) => {
-    // setSearchOption(value)
-    console.log(value)
+  const handleSelectSearch = () => {
+    setSearchClick(true)
   }
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -133,7 +179,7 @@ const TableServerSide = ({ topicName }: Props) => {
               flexWrap: 'wrap',
               alignItems: 'center',
               justifyContent: 'start',
-              p: theme => theme.spacing(2, 5, 4, 5)
+              p: theme => theme.spacing(4, 5, 4, 5)
             }}
           >
             <TextField
@@ -143,7 +189,9 @@ const TableServerSide = ({ topicName }: Props) => {
               placeholder='Search'
               InputProps={{
                 startAdornment: (
-                  <Box sx={{ mr: 2, display: 'flex' }}>{/* <Icon icon='mdi:magnify' fontSize={20} /> */}</Box>
+                  <Box sx={{ mr: 2, display: 'flex' }}>
+                    <Icon icon='mdi:magnify' />
+                  </Box>
                 )
               }}
               sx={{
@@ -156,49 +204,71 @@ const TableServerSide = ({ topicName }: Props) => {
                 }
               }}
             />
-            <Select
-              labelId='demo-simple-select-label'
-              id='demo-simple-select'
-              value={searchOption}
-              label=''
-              onChange={handleChange}
-              sx={{ height: 40 }}
-            >
-              <MenuItem value='key'>key</MenuItem>
-              <MenuItem value='header'>header</MenuItem>
-              <MenuItem value='timestamp'>timestamp</MenuItem>
-              <MenuItem value='partition'>partition</MenuItem>
+            <Select value={searchOption} label='' onChange={handleChange} sx={{ height: 40 }}>
+              <MenuItem value='key'>
+                <ListItemText primary='key' />
+              </MenuItem>
 
-              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                <Button variant='contained' sx={{ width: 130 }} onClick={() => handleSelectSearch(searchOption)}>
-                  Select
-                </Button>
-              </Box>
+              <MenuItem value='header'>
+                <ListItemText primary='header' />
+              </MenuItem>
+              <MenuItem value='timestamp'>
+                <ListItemText primary='timestamp' />
+              </MenuItem>
+              <MenuItem value='partition'>
+                <ListItemText primary='partition' />
+              </MenuItem>
             </Select>
+            {searchOption === 'key' || searchOption === 'header' ? (
+              <Checkbox checked={checked} onChange={handleCheck} sx={{ '& .MuiSvgIcon-root': { fontSize: 30 } }} />
+            ) : (
+              <></>
+            )}
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Button variant='contained' color='secondary' sx={{ width: 130 }} onClick={() => handleSelectSearch()}>
+                Search
+              </Button>
+            </Box>
           </Box>
-          <DataGrid
-            autoHeight
-            rows={currentTopics!}
-            rowCount={currentTopics!.length}
-            columns={columns}
-            checkboxSelection
-            pageSizeOptions={[7, 10, 25, 50, 100]}
-            getRowId={item => item.timestamp}
-            paginationModel={paginationModel}
-            onPaginationModelChange={setPaginationModel}
-            // slots={{ toolbar: ServerSideToolbar }}
-            // slotProps={{
-            //   baseButton: {
-            //     variant: 'outlined'
-            //   },
-            //   toolbar: {
-            //     value: searchValue,
-            //     searchOption: searchOption,
-            //     clearSearch: () => handleSearch(''),
-            //     onChange: (event: ChangeEvent<HTMLInputElement>) => handleSearch(event.target.value)
-            //   }
-            // }}
-          />
+          <Box>
+            {showSide ? (
+              <SideComp
+                open={showSide}
+                placement={placement}
+                topicName={topicName!}
+                currentTopics={currentTopics}
+                idArr={idArr}
+              />
+            ) : (
+              <></>
+            )}
+            <DataGrid
+              autoHeight
+              rows={currentTopics!}
+              rowCount={currentTopics!.length}
+              columns={columns}
+              checkboxSelection
+              pageSizeOptions={[7, 10, 25, 50, 100]}
+              getRowId={item => item.timestamp}
+              paginationModel={paginationModel}
+              onPaginationModelChange={setPaginationModel}
+              // rowSelectionModel={selectionModel}
+              // onRowSelectionModelChange={selection => {
+              //   setIdArr(selection as string[])
+              //   if (selection.length > 1) {
+              //     const selectionSet = new Set(selectionModel)
+              //     const result = selection.filter((s: GridRowId) => !selectionSet.has(s))
+
+              //     setSelectionModel(result)
+              //   } else {
+              //     setSelectionModel(selection)
+              //   }
+              // }}
+              onRowSelectionModelChange={selection => {
+                setIdArr(selection as string[])
+              }}
+            />
+          </Box>
         </Card>
       )}
     </>

@@ -11,6 +11,7 @@ import SearchComp from 'src/views/pages/catalog/SearchComp'
 import { useTopic } from 'src/context/TopicsContext'
 import CustomChip from 'src/@core/components/mui/chip'
 import Loader from '../Loader'
+import { set } from 'nprogress'
 
 // ** Data Import
 
@@ -35,73 +36,104 @@ const columns: GridColDef[] = [
 
 export default function TopicConfigComp({ topicName }: Props) {
   const [query, setQuery] = useState('')
-  const { getTopicConfig, getTopic, topic, rows, isLoading, loadingConfig } = useTopic()
+  const { getTopicConfig, getTopic, topic, rows, isLoading, loadingConfig, getTopicSize, topicSize, loadingTopicSize } =
+    useTopic()
+  const [currentData, setCurrentData] = useState([
+    {
+      name: '',
+      value: ''
+    }
+  ])
+  const [retentionTime, setRetentionTime] = useState(0)
+  const [topicSizeConfig, setTopicSizeConfig] = useState('')
+  // let topicSize = ''
   let data: any = []
-  let topicSize = ''
-  let retention = 0
 
   useEffect(() => {
     if (topicName) {
       getTopicConfig(topicName)
       getTopic(topicName)
+      getTopicSize()
     }
   }, [topicName])
-  if (rows !== null && typeof rows === 'object') {
-    const val = Object.values(rows).find(item => item)
-    const finalObj = Object.values(val.entries)
-    data = finalObj.map((obj: any) => {
-      if (obj.name === 'retention.ms') {
-        retention = obj.value / 86400000
-      }
-      console.log('ms:', retention)
 
-      return {
-        name: obj.name,
-        value: obj.value
-      }
-    })
-  } else {
-    console.log('obj is null or undefined')
-  }
-  console.log(data)
-  const filteredData = data.filter((row: { name: string }) => {
-    return row.name.toLowerCase().includes(query.toLowerCase())
-  })
+  useEffect(() => {
+    let retention = 0
+    if (rows) {
+      const val = Object.values(rows).find(item => item)
 
-  if (topic !== undefined && typeof topic === 'object') {
-    const val = Object.values(topic)
-    console.log(val)
-    let count = 0
-    let size = 0
-    let sizeName = ''
-    if (topic) {
-      topicSize = ''
-      for (let i = 0; i < topic.partitions.length; i++) {
-        size += topic.partitions[i].size
-      }
-      while (size > 1000) {
-        size /= 1000
-        count += 1
-      }
-      // return size
-      if (count == 0) {
-        sizeName = 'bytes'
-        topicSize = size + ' ' + sizeName
-      } else if (count == 1) {
-        sizeName = 'kilobytes'
-        topicSize = size + ' ' + sizeName
-      } else if (count == 2) {
-        sizeName = 'megabytes'
-        topicSize = size + ' ' + sizeName
-      } else if (count == 3) {
-        sizeName = 'gigabytes'
-        topicSize = size + ' ' + sizeName
+      if (val?.entries) {
+        const finalObj = Object.values(val.entries)
+
+        data = finalObj.map((obj: any) => {
+          if (obj.name === 'retention.ms') {
+            retention = obj.value / 86400000
+          }
+
+          return {
+            name: obj.name,
+            value: obj.value
+          }
+        })
+        setRetentionTime(retention)
+        setCurrentData(data)
       }
     }
-  } else {
-    console.log('obj is null or undefined')
-  }
-  console.log(isLoading, loadingConfig)
+  }, [rows])
+
+  useEffect(() => {
+    let sizeObj = ''
+    let size = 0
+    let count = 0
+    let sizeName = ''
+    if (topicSize) {
+      let sizeData: any = []
+      const obj = Object.values(topicSize)
+      sizeData = obj.map(el => {
+        if (el.name === topicName) {
+          for (let i = 0; i < el.partitions.length; i++) {
+            size += el.partitions[i].size
+          }
+          while (size > 1000) {
+            size /= 1000
+            count += 1
+          }
+          // return size
+          if (count == 0) {
+            sizeName = 'bytes'
+            sizeObj = size + ' ' + sizeName
+          } else if (count == 1) {
+            sizeName = 'kilobytes'
+            sizeObj = size + ' ' + sizeName
+          } else if (count == 2) {
+            sizeName = 'megabytes'
+            sizeObj = size + ' ' + sizeName
+          } else if (count == 3) {
+            sizeName = 'gigabytes'
+            sizeObj = size + ' ' + sizeName
+          }
+        }
+      })
+      setTopicSizeConfig(sizeObj)
+    }
+  }, [topicSize])
+
+  useEffect(() => {
+    const val = Object.values(rows).find(item => item)
+    if (val) {
+      const finalObj = Object.values(val.entries)
+      let search_data = finalObj.filter((row: any) => {
+        return row.name.toLowerCase().includes(query.toLowerCase())
+      })
+      let newData = search_data.map((obj: any) => {
+        return {
+          name: obj.name,
+          value: obj.value
+        }
+      })
+      setCurrentData(newData)
+    }
+  }, [query])
   return (
     <>
       {!isLoading && !loadingConfig ? (
@@ -118,13 +150,17 @@ export default function TopicConfigComp({ topicName }: Props) {
               <p>Partitions</p>
               <CustomChip label={topic!.partitions.length} skin='light' color='primary' />
             </Card>
-            <Card sx={{ width: 300, padding: 4 }}>
-              <p>Topic Size</p>
-              <CustomChip label={topicSize} skin='light' color='primary' />
-            </Card>
+            {loadingTopicSize ? (
+              <Loader />
+            ) : (
+              <Card sx={{ width: 300, padding: 4 }}>
+                <p>Topic Size</p>
+                <CustomChip label={topicSizeConfig} skin='light' color='primary' />
+              </Card>
+            )}
             <Card sx={{ width: 300, padding: 4 }}>
               <p>Retention</p>
-              <CustomChip label={retention + ' days'} skin='light' color='primary' />
+              <CustomChip label={retentionTime + ' days'} skin='light' color='primary' />
             </Card>
             <Card sx={{ width: 300, padding: 4 }}>
               <p>Replication Factor</p>
@@ -134,7 +170,7 @@ export default function TopicConfigComp({ topicName }: Props) {
           <Card>
             <SearchComp setQuery={setQuery} />
             <Box sx={{ height: 700 }}>
-              <DataGrid columns={columns} rows={filteredData} getRowId={item => item.name} />
+              <DataGrid columns={columns} rows={currentData} getRowId={item => item.name} />
             </Box>
           </Card>
         </>
