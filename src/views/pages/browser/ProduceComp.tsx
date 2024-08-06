@@ -1,6 +1,6 @@
 import { Box, Button, Dialog, DialogTitle, FormControl, List, OutlinedInput, Stack } from '@mui/material'
 import React, { useState } from 'react'
-import { useBrowser } from 'src/context/BrowserContext'
+import { Produce, useBrowser } from 'src/context/BrowserContext'
 
 interface Props {
   topicName: string
@@ -27,7 +27,18 @@ export default function ProduceComp({ topicName }: Props) {
   }
 
   const handleNewRecord = () => {
-    produceMessage(topicName, newRecords.key, newRecords.value, header)
+    let obj: Produce = {
+      topic: topicName,
+      key: newRecords.key,
+      value: newRecords.value,
+      headers: [
+        {
+          key: header.key,
+          value: header.value
+        }
+      ]
+    }
+    produceMessage(obj)
     consumeMessages(topicName)
     setOpen(false)
   }

@@ -57,10 +57,14 @@ export default function BasicTabs({ topicName, currentTopics, idArr }: Props) {
       new_offset = currentTopics[i].offset
       new_key = currentTopics[i].key
       new_value = currentTopics[i].value
-      console.log('+++++++', new_partition)
     }
   }
-  const escapedResponseJson = JSON.stringify(new_key).replace('"', '\n')
+  //   const customOptions = new_key
+  //   const dataObj = JSON.parse(customOptions)
+  //   console.log('data obj: ', dataObj)
+
+  //   const customPrettyJSON = JSON.stringify(JSON.parse(dataObj), null, '\t')
+  //   console.log('pretty json: ', customPrettyJSON)
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
   }

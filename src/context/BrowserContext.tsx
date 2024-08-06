@@ -9,10 +9,17 @@ export interface Browser {
   offset: number
 }
 
+export interface Produce {
+  topic: string
+  key: string
+  value: string
+  headers: [{ key: string; value: string }]
+}
+
 interface InterfaceBrowser {
   browsers: Browser[]
   browserTopics: Topic[]
-  produceMessage: (topicName: string, key: string, value: string, headers: { key: string; value: string }) => void
+  produceMessage: (obj: Produce) => void
   searchByPartitions: (topicName: string, partition: number) => void
   searchByKeys: (searchRequest: string[], topicName: string, checked: boolean) => void
   searchByHeaders: (searchRequest: string[], topicName: string, checked: boolean) => void
@@ -32,7 +39,7 @@ interface Props {
 const InitialValue = {
   browsers: [],
   browserTopics: [],
-  produceMessage: (topicName: string, key: string, value: string, headers: { key: string; value: string }) => null,
+  produceMessage: (obj: Produce) => null,
   searchByPartitions: (topicName: string, partition: number) => null,
   searchByKeys: (searchRequest: string[], topicName: string, checked: boolean) => null,
   searchByHeaders: (searchRequest: string[], topicName: string, checked: boolean) => null,
@@ -71,21 +78,11 @@ const BrowserProvider = ({ children }: Props) => {
     }
   }
 
-  const produceMessage = async (
-    topicName: string,
-    key: string,
-    value: string,
-    headers: { key: string; value: string }
-  ) => {
+  const produceMessage = async (obj: Produce) => {
     try {
       const response = await fetch(`http://localhost:5000/api/KafkaAdmin/produce-message`, {
         method: 'POST',
-        body: JSON.stringify({
-          headers: [headers],
-          key: key,
-          value: value,
-          topic: topicName
-        }),
+        body: JSON.stringify(obj),
         headers: {
           'Content-Type': 'application/json'
         }
