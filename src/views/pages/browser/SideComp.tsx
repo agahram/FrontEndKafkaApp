@@ -15,7 +15,7 @@ export default function SideComp({ open, placement, topicName, currentTopics, id
   return (
     <div>
       <Popper
-        sx={{ zIndex: 1200 }}
+        sx={{ zIndex: 1500 }}
         open={open}
         //   anchorEl={anchorEl}
         placement={placement}
@@ -23,7 +23,7 @@ export default function SideComp({ open, placement, topicName, currentTopics, id
       >
         {({ TransitionProps }) => (
           <Fade {...TransitionProps} timeout={350}>
-            <Paper sx={{ height: 700, width: 350, paddingLeft: 3 }}>
+            <Paper sx={{ height: 700, width: 400, paddingLeft: 3 }}>
               <br />
               <TopButtons topicName={topicName} currentTopics={currentTopics} idArr={idArr} />
             </Paper>

@@ -11,7 +11,7 @@ export interface Browser {
 
 export interface Produce {
   topic: string
-  key: string
+  key: any
   value: string
   headers: [{ key: string; value: string }]
 }
@@ -79,6 +79,11 @@ const BrowserProvider = ({ children }: Props) => {
   }
 
   const produceMessage = async (obj: Produce) => {
+    console.log('initial', obj)
+
+    console.log('json', JSON.stringify(obj))
+    console.log(typeof obj)
+
     try {
       const response = await fetch(`http://localhost:5000/api/KafkaAdmin/produce-message`, {
         method: 'POST',

@@ -27,7 +27,7 @@ export default function ProduceComp({ topicName }: Props) {
   }
 
   const handleNewRecord = () => {
-    let obj: Produce = {
+    produceMessage({
       topic: topicName,
       key: newRecords.key,
       value: newRecords.value,
@@ -37,8 +37,7 @@ export default function ProduceComp({ topicName }: Props) {
           value: header.value
         }
       ]
-    }
-    produceMessage(obj)
+    })
     consumeMessages(topicName)
     setOpen(false)
   }

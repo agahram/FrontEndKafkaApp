@@ -4,9 +4,10 @@ import Tab from '@mui/material/Tab'
 import Box from '@mui/material/Box'
 import { Divider } from '@mui/material'
 import { Browser } from 'src/context/BrowserContext'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { idID } from '@mui/material/locale'
 import { id } from 'date-fns/locale'
+import TextWithLineBreaks from './TextLineBreak'
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -45,26 +46,58 @@ function a11yProps(index: number) {
 
 export default function BasicTabs({ topicName, currentTopics, idArr }: Props) {
   const [value, setValue] = useState(0)
-  let new_time = ''
-  let new_partition = 0
-  let new_offset = 0
-  let new_key = ''
-  let new_value = ''
-  for (let i = 0; i < currentTopics.length; i++) {
-    if (currentTopics[i].timestamp === idArr[0]) {
-      new_time = currentTopics[i].timestamp
-      new_partition = currentTopics[i].partitions
-      new_offset = currentTopics[i].offset
-      new_key = currentTopics[i].key
-      new_value = currentTopics[i].value
-    }
-  }
-  //   const customOptions = new_key
-  //   const dataObj = JSON.parse(customOptions)
-  //   console.log('data obj: ', dataObj)
+  const [jsonKey, setJsonKey] = useState('')
+  const [jsonValue, setjsonValue] = useState('')
+  const [time, setTime] = useState('')
+  const [partition, setPartition] = useState(0)
+  const [offset, setOffset] = useState(0)
 
-  //   const customPrettyJSON = JSON.stringify(JSON.parse(dataObj), null, '\t')
-  //   console.log('pretty json: ', customPrettyJSON)
+  useEffect(() => {
+    let new_key = ''
+    let new_value = ''
+    let new_time = ''
+    let new_partition = 0
+    let new_offset = 0
+    let dataObj = ''
+    let customPrettyJSON = ''
+    for (let i = 0; i < currentTopics.length; i++) {
+      if (currentTopics[i].timestamp === idArr[0]) {
+        new_time = currentTopics[i].timestamp
+        new_partition = currentTopics[i].partitions
+        new_offset = currentTopics[i].offset
+        new_key = currentTopics[i].key
+        new_value = currentTopics[i].value
+      }
+    }
+    setTime(new_time)
+    setPartition(new_partition)
+    setOffset(new_offset)
+    if (new_key) {
+      try {
+        dataObj = JSON.parse(String(new_key))
+        console.log('data obj: ', dataObj)
+
+        customPrettyJSON = JSON.stringify(dataObj, null, '\t')
+        console.log('pretty json: ', customPrettyJSON)
+        setJsonKey(customPrettyJSON)
+      } catch (error) {
+        console.log('err', error)
+        setJsonKey(new_key)
+      }
+    }
+    if (new_value) {
+      try {
+        dataObj = JSON.parse(String(new_value))
+
+        customPrettyJSON = JSON.stringify(dataObj, null, '\t')
+        setjsonValue(customPrettyJSON)
+      } catch (error) {
+        console.log('err', error)
+        setjsonValue(new_value)
+      }
+    }
+  }, [])
+
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
   }
@@ -129,30 +162,24 @@ export default function BasicTabs({ topicName, currentTopics, idArr }: Props) {
         <Divider />
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <h4>Partition</h4>
-          <h5>{new_partition}</h5>
+          <h5>{partition}</h5>
         </Box>
         <Divider />
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <h4>Offset</h4>
-          <h5>{new_offset}</h5>
+          <h5>{offset}</h5>
         </Box>
         <Divider />
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <h4>Timestamp</h4>
-          <h5>{new_time}</h5>
+          <h5>{time}</h5>
         </Box>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <h4>Key</h4>
-          <h5>{new_key}</h5>
-        </Box>
+        <TextWithLineBreaks text={jsonKey} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <h4>Value</h4>
-          <h5>{new_value}</h5>
-        </Box>
+        <TextWithLineBreaks text={jsonValue} />
       </CustomTabPanel>
     </Box>
   )
