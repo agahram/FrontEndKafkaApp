@@ -19,13 +19,15 @@ export interface Produce {
 interface InterfaceBrowser {
   browsers: Browser[]
   browserTopics: Topic[]
+  recordsCount: number
   produceMessage: (obj: Produce) => void
   searchByPartitions: (topicName: string, partition: number) => void
-  searchByKeys: (searchRequest: string[], topicName: string, checked: boolean) => void
-  searchByHeaders: (searchRequest: string[], topicName: string, checked: boolean) => void
+  searchByKeys: (searchRequest: string[], topicName: string, searchChoice: string) => void
+  searchByHeaders: (searchRequest: string[], topicName: string, searchChoice: string) => void
   searchByDatetime: (topicName: string, time1: any, time2: any) => void
   handlePagination: (pagination: { page: number; pageSize: number }, topicName: string) => void
   consumeMessages: (topicName: string) => void
+  getRecordsCount: (topicName: string) => void
   getBrowserTopics: () => void
   isLoading: boolean
   loading: boolean
@@ -39,13 +41,15 @@ interface Props {
 const InitialValue = {
   browsers: [],
   browserTopics: [],
+  recordsCount: 0,
   produceMessage: (obj: Produce) => null,
   searchByPartitions: (topicName: string, partition: number) => null,
-  searchByKeys: (searchRequest: string[], topicName: string, checked: boolean) => null,
-  searchByHeaders: (searchRequest: string[], topicName: string, checked: boolean) => null,
+  searchByKeys: (searchRequest: string[], topicName: string, searchChoice: string) => null,
+  searchByHeaders: (searchRequest: string[], topicName: string, searchChoice: string) => null,
   searchByDatetime: (topicName: string, time1: any, time2: any) => null,
   handlePagination: (pagination: { page: number; pageSize: number }, topicName: string) => null,
   consumeMessages: (topicName: string) => null,
+  getRecordsCount: (topicName: string) => null,
   getBrowserTopics: () => null,
   isLoading: false,
   loading: false,
@@ -60,6 +64,7 @@ const BrowserProvider = ({ children }: Props) => {
   const [isLoading, setIsLoading] = useState(false)
   const [loading, setLoading] = useState(false)
   const [searchLoad, setSearchLoad] = useState(false)
+  const [recordsCount, setRecordsCount] = useState(0)
 
   const getBrowserTopics = async () => {
     try {
@@ -102,15 +107,21 @@ const BrowserProvider = ({ children }: Props) => {
     console.log('----', topicName, pagination.pageSize, pagination.page)
 
     try {
+      setLoading(true)
       const response = await fetch(
-        `http://localhost:5000/api/KafkaAdmin/get-specific-pages?topic=${topicName}&pageSize=${pagination.pageSize}&pageNumber=${pagination.page}
+        `http://localhost:5000/api/KafkaAdmin/get-specific-pages?topic=${topicName}&pageSize=${
+          pagination.pageSize
+        }&pageNumber=${pagination.page + 1}
       `,
         {
           method: 'GET'
         }
       )
       let data = await response.json()
+      console.log('pagination data:', data)
+
       setBrowsers(data)
+      setLoading(false)
     } catch (err: any) {
       console.log(err.message)
     }
@@ -133,11 +144,11 @@ const BrowserProvider = ({ children }: Props) => {
     }
   }
 
-  const searchByKeys = async (searchRequest: string[], topicName: string, checked: boolean) => {
+  const searchByKeys = async (searchRequest: string[], topicName: string, searchChoice: string) => {
     try {
       setSearchLoad(true)
       let searchOption = 0
-      if (checked) {
+      if (searchChoice === 'contaned') {
         searchOption = 1
       } else {
         searchOption = 2
@@ -161,11 +172,11 @@ const BrowserProvider = ({ children }: Props) => {
     }
   }
 
-  const searchByHeaders = async (searchRequest: string[], topicName: string, checked: boolean) => {
+  const searchByHeaders = async (searchRequest: string[], topicName: string, searchChoice: string) => {
     try {
       setSearchLoad(true)
       let searchOption = 0
-      if (checked) {
+      if (searchChoice === 'contaned') {
         searchOption = 1
       } else {
         searchOption = 2
@@ -227,11 +238,31 @@ const BrowserProvider = ({ children }: Props) => {
     }
   }
 
+  const getRecordsCount = async (topicName: string) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/KafkaAdmin/get-topic-records-count?topicName=${topicName}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+      let data = await response.json()
+      setRecordsCount(data)
+      return data
+    } catch (err: any) {
+      console.log(err.message)
+    }
+  }
+
   return (
     <BrowserContext.Provider
       value={{
         browsers,
         browserTopics,
+        recordsCount,
         produceMessage,
         searchByPartitions,
         searchByKeys,
@@ -239,6 +270,7 @@ const BrowserProvider = ({ children }: Props) => {
         searchByDatetime,
         handlePagination,
         consumeMessages,
+        getRecordsCount,
         getBrowserTopics,
         isLoading,
         loading,

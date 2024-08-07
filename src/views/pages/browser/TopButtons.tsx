@@ -176,10 +176,14 @@ export default function BasicTabs({ topicName, currentTopics, idArr }: Props) {
         </Box>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <TextWithLineBreaks text={jsonKey} />
+        <h4>
+          <TextWithLineBreaks text={jsonKey} />
+        </h4>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <TextWithLineBreaks text={jsonValue} />
+        <h4>
+          <TextWithLineBreaks text={jsonValue} />
+        </h4>
       </CustomTabPanel>
     </Box>
   )

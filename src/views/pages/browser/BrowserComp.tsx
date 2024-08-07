@@ -6,16 +6,18 @@ import Loader from '../catalog/Loader'
 import ProduceComp from './ProduceComp'
 
 export interface BrowserTopic {
+  id: any
   name: string
 }
 
 export default function BrowserComp() {
-  const { isLoading, consumeMessages } = useBrowser()
+  const { isLoading, consumeMessages, handlePagination } = useBrowser()
   const { browserTopics, getBrowserTopics } = useBrowser()
   const [currentTopics, setCurrentTopics] = useState<BrowserTopic[]>()
   const [name, setName] = useState('')
   const [isClicked, setIsClicked] = useState(false)
   const [fetchClick, setFetchClick] = useState(false)
+  const [searchClick, setSearchClick] = useState<boolean>(false)
 
   useEffect(() => {
     getBrowserTopics()
@@ -27,7 +29,8 @@ export default function BrowserComp() {
       const val = Object.values(browserTopics)
       data = val.map((obj: any) => {
         return {
-          name: obj.name
+          name: obj.name,
+          id: Date.now().toString(36)
         }
       })
       setCurrentTopics(data)
@@ -43,7 +46,8 @@ export default function BrowserComp() {
   }
   useEffect(() => {
     if (name) {
-      consumeMessages(name)
+      setSearchClick(false)
+      handlePagination({ page: 1, pageSize: 7 }, name)
       setFetchClick(false)
     }
   }, [fetchClick])
@@ -69,20 +73,22 @@ export default function BrowserComp() {
           <Card sx={{ width: 250, marginRight: 5 }}>
             <CardContent sx={{ pt: 8, display: 'flex', alignItems: 'left', flexDirection: 'column' }}>
               <Typography variant='h6'>Topics</Typography>
-              <Stack>
-                {currentTopics?.map(el => {
-                  return (
-                    <>
-                      <Button variant='text' color='secondary' onClick={() => handleClick(el.name)} key={el.name}>
-                        {el.name}
-                      </Button>
-                    </>
-                  )
-                })}
-              </Stack>
+              {currentTopics?.map(el => {
+                return (
+                  <div key={el.id}>
+                    <Button variant='text' color='secondary' onClick={() => handleClick(el.name)}>
+                      {el.name}
+                    </Button>
+                  </div>
+                )
+              })}
             </CardContent>
           </Card>
-          {isClicked || fetchClick ? <TableComp topicName={name} /> : <></>}
+          {isClicked || fetchClick ? (
+            <TableComp topicName={name} searchClick={searchClick} setSearchClick={setSearchClick} />
+          ) : (
+            <></>
+          )}
         </Box>
       )}
     </div>

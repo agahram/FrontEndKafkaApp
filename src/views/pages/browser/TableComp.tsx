@@ -20,6 +20,8 @@ import {
   TextField
 } from '@mui/material'
 import SideComp from './SideComp'
+import Paper from 'src/@core/theme/overrides/paper'
+import { render } from 'nprogress'
 
 const columns: GridColDef[] = [
   {
@@ -57,9 +59,11 @@ const columns: GridColDef[] = [
 
 interface Props {
   topicName?: string
+  searchClick: boolean
+  setSearchClick: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const TableServerSide = ({ topicName }: Props) => {
+const TableServerSide = ({ topicName, searchClick, setSearchClick }: Props) => {
   const {
     browsers,
     consumeMessages,
@@ -68,24 +72,29 @@ const TableServerSide = ({ topicName }: Props) => {
     searchLoad,
     searchByKeys,
     searchByDatetime,
-    searchByHeaders
+    searchByHeaders,
+    handlePagination,
+    getRecordsCount,
+    recordsCount
   } = useBrowser()
   const [currentTopics, setCurrentTopics] = useState<Browser[]>([])
   const [paginationModel, setPaginationModel] = useState({
     pageSize: 7,
-    page: 1
+    page: 0
   })
   const [searchValue, setSearchValue] = useState<string>('')
   const [searchOption, setSearchOption] = useState<string>('')
-  const [searchClick, setSearchClick] = useState<boolean>(false)
+  // const [searchClick, setSearchClick] = useState<boolean>(false)
   const [checked, setChecked] = useState(false)
-  const [searchRequest, setSearchRequest] = useState<string[]>([])
   const [idArr, setIdArr] = useState<string[]>([])
   const [showSide, setShowSide] = useState(false)
   const [placement, setPlacement] = useState<PopperPlacementType>()
+  const [searchChoice, setSearchChoice] = useState<string>('')
   const [selectionModel, setSelectionModel] = useState<GridRowId[]>([])
 
-  console.log('Browsers: ', currentTopics)
+  console.log('page', paginationModel)
+
+  console.log('idArr', idArr)
 
   useEffect(() => {
     idArr.length !== 0 ? setShowSide(true) : setShowSide(false)
@@ -98,12 +107,15 @@ const TableServerSide = ({ topicName }: Props) => {
 
   useEffect(() => {
     if (topicName) {
-      consumeMessages(topicName)
+      // consumeMessages(topicName)
+      handlePagination(paginationModel, topicName)
+      getRecordsCount(topicName)
     }
-  }, [topicName])
+  }, [topicName, paginationModel])
 
   useEffect(() => {
     setSearchOption('')
+    setSearchChoice('')
     setSearchValue('')
     let array: SetStateAction<string[]> = []
     if (topicName && searchValue) {
@@ -111,31 +123,33 @@ const TableServerSide = ({ topicName }: Props) => {
         searchByPartitions(topicName, Number(searchValue))
       } else if (searchOption === 'key') {
         toast('Write all the keys with , separator')
+        try {
+          let keySearchValue = searchValue.split(',')
 
-        let keySearchValue = searchValue.split(',')
-
-        array = keySearchValue
-
-        searchByKeys(keySearchValue, topicName, checked)
+          searchByKeys(keySearchValue, topicName, searchChoice)
+        } catch (error) {
+          console.log('error', error)
+        }
       } else if (searchOption === 'timestamp') {
         toast('Write time range with - separator')
+        try {
+          let timestampSearchValue = searchValue.split('-')
 
-        let timestampSearchValue = searchValue.split('-')
-
-        array = timestampSearchValue
-
-        searchByDatetime(topicName, timestampSearchValue[0], timestampSearchValue[1])
+          searchByDatetime(topicName, timestampSearchValue[0], timestampSearchValue[1])
+        } catch (error) {
+          console.log('error', error)
+        }
       } else if (searchOption === 'header') {
         toast('Write headers value and keys with , separator')
+        try {
+          let headerSearchValue = searchValue.split(',')
 
-        let headerSearchValue = searchValue.split(',')
-
-        array = headerSearchValue
-        searchByHeaders(headerSearchValue, topicName, checked)
+          searchByHeaders(headerSearchValue, topicName, searchChoice)
+        } catch (error) {
+          console.log('error', error)
+        }
       }
-      setSearchRequest(array)
     }
-    setSearchClick(false)
   }, [searchClick])
 
   useEffect(() => {
@@ -143,16 +157,18 @@ const TableServerSide = ({ topicName }: Props) => {
     if (browsers !== null && typeof browsers === 'object') {
       data = browsers.map((obj: any) => {
         return {
-          key: obj.message.key,
-          value: obj.message.value,
-          timestamp: obj.message.timestamp.utcDateTime,
+          key: obj.message?.key,
+          value: obj.message?.value,
+          timestamp: obj.message?.timestamp.utcDateTime,
           partitions: obj.partition,
-          offset: obj.offset
+          offset: obj.offset,
+          id: obj.message?.timestamp.utcDateTime || Date.now().toString(36)
         }
       })
       setCurrentTopics(data)
     }
   }, [browsers])
+  console.log('search data: ', currentTopics)
 
   const handleSearch = (value: string) => {
     setSearchValue(value)
@@ -165,6 +181,10 @@ const TableServerSide = ({ topicName }: Props) => {
   const handleChange = (event: SelectChangeEvent) => {
     setSearchOption(event.target.value)
   }
+  const handleSearchChange = (event: SelectChangeEvent) => {
+    setSearchChoice(event.target.value)
+  }
+  console.log(searchClick, currentTopics.length, recordsCount)
 
   return (
     <>
@@ -220,7 +240,16 @@ const TableServerSide = ({ topicName }: Props) => {
               </MenuItem>
             </Select>
             {searchOption === 'key' || searchOption === 'header' ? (
-              <Checkbox checked={checked} onChange={handleCheck} sx={{ '& .MuiSvgIcon-root': { fontSize: 30 } }} />
+              // <Checkbox checked={checked} onChange={handleCheck} sx={{ '& .MuiSvgIcon-root': { fontSize: 30 } }} />
+              <Select value={searchChoice} label='' onChange={handleSearchChange} sx={{ height: 40 }}>
+                <MenuItem value='contained'>
+                  <ListItemText primary='contained' />
+                </MenuItem>
+
+                <MenuItem value='exact'>
+                  <ListItemText primary='exact' />
+                </MenuItem>
+              </Select>
             ) : (
               <></>
             )}
@@ -238,34 +267,35 @@ const TableServerSide = ({ topicName }: Props) => {
                 topicName={topicName!}
                 currentTopics={currentTopics}
                 idArr={idArr}
+                setShowSide={setShowSide}
+                setSelectionModel={setSelectionModel}
               />
             ) : (
               <></>
             )}
             <DataGrid
               autoHeight
-              rows={currentTopics!}
-              rowCount={currentTopics!.length}
+              rows={currentTopics}
+              rowCount={searchClick ? currentTopics.length : recordsCount}
+              sortingMode='server'
+              filterMode='server'
+              paginationMode='server'
               columns={columns}
               checkboxSelection
               pageSizeOptions={[7, 10, 25, 50, 100]}
-              getRowId={item => item.timestamp}
+              getRowId={item => item.id}
               paginationModel={paginationModel}
               onPaginationModelChange={setPaginationModel}
-              // rowSelectionModel={selectionModel}
-              // onRowSelectionModelChange={selection => {
-              //   setIdArr(selection as string[])
-              //   if (selection.length > 1) {
-              //     const selectionSet = new Set(selectionModel)
-              //     const result = selection.filter((s: GridRowId) => !selectionSet.has(s))
-
-              //     setSelectionModel(result)
-              //   } else {
-              //     setSelectionModel(selection)
-              //   }
-              // }}
+              rowSelectionModel={selectionModel}
               onRowSelectionModelChange={selection => {
                 setIdArr(selection as string[])
+                if (selection.length > 1) {
+                  const selectionSet = new Set(selectionModel)
+                  const result = selection.filter(s => !selectionSet.has(s))
+                  setSelectionModel(result)
+                } else {
+                  setSelectionModel(selection)
+                }
               }}
             />
           </Box>
