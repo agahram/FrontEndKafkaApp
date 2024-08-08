@@ -4,10 +4,12 @@ import Tab from '@mui/material/Tab'
 import Box from '@mui/material/Box'
 import { Divider } from '@mui/material'
 import { Browser } from 'src/context/BrowserContext'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { idID } from '@mui/material/locale'
 import { id } from 'date-fns/locale'
 import TextWithLineBreaks from './TextLineBreak'
+import ProduceComp from './ProduceComp'
+import ReproduceComp from './ReproduceComp'
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -19,6 +21,7 @@ interface Props {
   topicName: string
   currentTopics: Browser[]
   idArr: string[]
+  setShowSide: Dispatch<SetStateAction<boolean>>
 }
 
 function CustomTabPanel(props: TabPanelProps) {
@@ -44,7 +47,7 @@ function a11yProps(index: number) {
   }
 }
 
-export default function BasicTabs({ topicName, currentTopics, idArr }: Props) {
+export default function BasicTabs({ topicName, currentTopics, idArr, setShowSide }: Props) {
   const [value, setValue] = useState(0)
   const [jsonKey, setJsonKey] = useState('')
   const [jsonValue, setjsonValue] = useState('')
@@ -75,13 +78,13 @@ export default function BasicTabs({ topicName, currentTopics, idArr }: Props) {
     if (new_key) {
       try {
         dataObj = JSON.parse(String(new_key))
-        console.log('data obj: ', dataObj)
+        // console.log('data obj: ', dataObj)
 
         customPrettyJSON = JSON.stringify(dataObj, null, '\t')
-        console.log('pretty json: ', customPrettyJSON)
+        // console.log('pretty json: ', customPrettyJSON)
         setJsonKey(customPrettyJSON)
       } catch (error) {
-        console.log('err', error)
+        // console.log('err', error)
         setJsonKey(new_key)
       }
     }
@@ -174,6 +177,7 @@ export default function BasicTabs({ topicName, currentTopics, idArr }: Props) {
           <h4>Timestamp</h4>
           <h5>{time}</h5>
         </Box>
+        <ReproduceComp topicName={topicName} initialKey={String(jsonKey)} initialValue={String(jsonValue)} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <h4>

@@ -14,6 +14,8 @@ import React, { Dispatch, SetStateAction } from 'react'
 import TopButtons from './TopButtons'
 import { Browser } from 'src/context/BrowserContext'
 import { GridRowId } from '@mui/x-data-grid'
+import ProduceComp from './ProduceComp'
+import { auto } from '@popperjs/core'
 
 interface Props {
   open: boolean
@@ -37,7 +39,7 @@ export default function SideComp({
   return (
     <div>
       <Popper
-        sx={{ zIndex: 1500 }}
+        sx={{ zIndex: 1200 }}
         open={open}
         //   anchorEl={anchorEl}
         placement={placement}
@@ -45,9 +47,14 @@ export default function SideComp({
       >
         {({ TransitionProps }) => (
           <Fade {...TransitionProps} timeout={350}>
-            <Paper sx={{ height: 700, width: 400, paddingLeft: 3 }}>
+            <Paper sx={{ height: auto, width: 400, paddingLeft: 3, paddingBottom: 10 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
-                <TopButtons topicName={topicName} currentTopics={currentTopics} idArr={idArr} />
+                <TopButtons
+                  topicName={topicName}
+                  currentTopics={currentTopics}
+                  idArr={idArr}
+                  setShowSide={setShowSide}
+                />
                 <Button
                   sx={{ fontSize: 20 }}
                   onClick={() => {
@@ -57,6 +64,7 @@ export default function SideComp({
                   X
                 </Button>
               </Box>
+              <br />
             </Paper>
           </Fade>
         )}

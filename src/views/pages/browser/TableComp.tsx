@@ -84,26 +84,18 @@ const TableServerSide = ({ topicName, searchClick, setSearchClick }: Props) => {
   })
   const [searchValue, setSearchValue] = useState<string>('')
   const [searchOption, setSearchOption] = useState<string>('')
-  // const [searchClick, setSearchClick] = useState<boolean>(false)
-  const [checked, setChecked] = useState(false)
   const [idArr, setIdArr] = useState<string[]>([])
   const [showSide, setShowSide] = useState(false)
   const [placement, setPlacement] = useState<PopperPlacementType>()
   const [searchChoice, setSearchChoice] = useState<string>('')
   const [selectionModel, setSelectionModel] = useState<GridRowId[]>([])
 
-  console.log('page', paginationModel)
-
-  console.log('idArr', idArr)
+  // console.log('page', paginationModel)
 
   useEffect(() => {
     idArr.length !== 0 ? setShowSide(true) : setShowSide(false)
     setPlacement('left')
   }, [idArr])
-
-  const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked)
-  }
 
   useEffect(() => {
     if (topicName) {
@@ -168,7 +160,6 @@ const TableServerSide = ({ topicName, searchClick, setSearchClick }: Props) => {
       setCurrentTopics(data)
     }
   }, [browsers])
-  console.log('search data: ', currentTopics)
 
   const handleSearch = (value: string) => {
     setSearchValue(value)
@@ -184,7 +175,6 @@ const TableServerSide = ({ topicName, searchClick, setSearchClick }: Props) => {
   const handleSearchChange = (event: SelectChangeEvent) => {
     setSearchChoice(event.target.value)
   }
-  console.log(searchClick, currentTopics.length, recordsCount)
 
   return (
     <>
@@ -197,7 +187,7 @@ const TableServerSide = ({ topicName, searchClick, setSearchClick }: Props) => {
               gap: 2,
               display: 'flex',
               flexWrap: 'wrap',
-              alignItems: 'center',
+              alignItems: 'stretch',
               justifyContent: 'start',
               p: theme => theme.spacing(4, 5, 4, 5)
             }}
@@ -228,7 +218,6 @@ const TableServerSide = ({ topicName, searchClick, setSearchClick }: Props) => {
               <MenuItem value='key'>
                 <ListItemText primary='key' />
               </MenuItem>
-
               <MenuItem value='header'>
                 <ListItemText primary='header' />
               </MenuItem>
@@ -240,12 +229,10 @@ const TableServerSide = ({ topicName, searchClick, setSearchClick }: Props) => {
               </MenuItem>
             </Select>
             {searchOption === 'key' || searchOption === 'header' ? (
-              // <Checkbox checked={checked} onChange={handleCheck} sx={{ '& .MuiSvgIcon-root': { fontSize: 30 } }} />
               <Select value={searchChoice} label='' onChange={handleSearchChange} sx={{ height: 40 }}>
                 <MenuItem value='contained'>
                   <ListItemText primary='contained' />
                 </MenuItem>
-
                 <MenuItem value='exact'>
                   <ListItemText primary='exact' />
                 </MenuItem>
@@ -261,15 +248,17 @@ const TableServerSide = ({ topicName, searchClick, setSearchClick }: Props) => {
           </Box>
           <Box>
             {showSide ? (
-              <SideComp
-                open={showSide}
-                placement={placement}
-                topicName={topicName!}
-                currentTopics={currentTopics}
-                idArr={idArr}
-                setShowSide={setShowSide}
-                setSelectionModel={setSelectionModel}
-              />
+              <>
+                <SideComp
+                  open={showSide}
+                  placement={placement}
+                  topicName={topicName!}
+                  currentTopics={currentTopics}
+                  idArr={idArr}
+                  setShowSide={setShowSide}
+                  setSelectionModel={setSelectionModel}
+                />
+              </>
             ) : (
               <></>
             )}
@@ -282,6 +271,7 @@ const TableServerSide = ({ topicName, searchClick, setSearchClick }: Props) => {
               paginationMode='server'
               columns={columns}
               checkboxSelection
+              // disableRowSelectionOnClick
               pageSizeOptions={[7, 10, 25, 50, 100]}
               getRowId={item => item.id}
               paginationModel={paginationModel}

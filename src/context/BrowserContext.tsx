@@ -148,7 +148,7 @@ const BrowserProvider = ({ children }: Props) => {
     try {
       setSearchLoad(true)
       let searchOption = 0
-      if (searchChoice === 'contaned') {
+      if (searchChoice === 'contained') {
         searchOption = 1
       } else {
         searchOption = 2
@@ -166,6 +166,8 @@ const BrowserProvider = ({ children }: Props) => {
       })
       let data = await response.json()
       setBrowsers(data)
+      console.log('search by keys', data)
+
       setSearchLoad(false)
     } catch (err: any) {
       console.log(err.message)

@@ -1,4 +1,4 @@
-import { Breadcrumbs, Stack } from '@mui/material'
+import { Breadcrumbs, Link, Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
@@ -12,6 +12,8 @@ import { useTopic } from 'src/context/TopicsContext'
 import CustomChip from 'src/@core/components/mui/chip'
 import Loader from '../Loader'
 import { set } from 'nprogress'
+import { useRouter } from 'next/router'
+import { auto } from '@popperjs/core'
 
 // ** Data Import
 
@@ -35,6 +37,7 @@ const columns: GridColDef[] = [
 ]
 
 export default function TopicConfigComp({ topicName }: Props) {
+  const router = useRouter()
   const [query, setQuery] = useState('')
   const { getTopicConfig, getTopic, topic, rows, isLoading, loadingConfig, getTopicSize, topicSize, loadingTopicSize } =
     useTopic()
@@ -143,8 +146,12 @@ export default function TopicConfigComp({ topicName }: Props) {
           </Card>
           <Stack direction='row' spacing={7} sx={{ marginBottom: 2, display: 'flex' }}>
             <Card sx={{ width: 300, padding: 4 }}>
-              <p>Records</p>
-              <CustomChip label={topic!.recordsCount} skin='light' color='primary' />
+              <Box sx={{ alignItems: 'center' }}>
+                <Link key='2' color='inherit' href='/browser' onClick={() => router.push('/browser')}>
+                  <p>Records</p>
+                </Link>
+                <CustomChip label={topic!.recordsCount} skin='light' color='primary' />
+              </Box>
             </Card>
             <Card sx={{ width: 300, padding: 4 }}>
               <p>Partitions</p>

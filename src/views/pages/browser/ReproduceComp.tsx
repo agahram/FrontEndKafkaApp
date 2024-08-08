@@ -1,18 +1,19 @@
-import { Box, Button, Dialog, DialogTitle, FormControl, List, OutlinedInput, Stack } from '@mui/material'
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import { Box, Button, Dialog, DialogTitle, FormControl, List, OutlinedInput, Stack, TextField } from '@mui/material'
+import { set } from 'nprogress'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Produce, useBrowser } from 'src/context/BrowserContext'
 
 interface Props {
   topicName: string
+  initialKey: string
+  initialValue: string
 }
 
-export default function ProduceComp({ topicName }: Props) {
-  const { produceMessage, consumeMessages } = useBrowser()
+export default function ReproduceComp({ topicName, initialKey, initialValue }: Props) {
+  const { produceMessage, consumeMessages, handlePagination } = useBrowser()
   const [open, setOpen] = useState(false)
-  const [newRecords, setNewRecords] = useState({
-    key: '',
-    value: ''
-  })
+  const [newRecords, setNewRecords] = useState({ key: '', value: '' })
+
   const [header, setHeader] = useState({
     key: '',
     value: ''
@@ -21,6 +22,9 @@ export default function ProduceComp({ topicName }: Props) {
   const handleClickOpen = () => {
     setOpen(true)
   }
+  useEffect(() => {
+    setNewRecords({ key: initialKey, value: initialValue })
+  }, [open])
 
   const handleClose = () => {
     setOpen(false)
@@ -38,14 +42,8 @@ export default function ProduceComp({ topicName }: Props) {
         }
       ]
     })
-    consumeMessages(topicName)
+    handlePagination({ page: 1, pageSize: 7 }, topicName)
     setOpen(false)
-  }
-  const handleRecordsChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, key: string) => {
-    setNewRecords({
-      ...newRecords,
-      [key]: event.target.value
-    })
   }
 
   const handleHeaderChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, key: string) => {
@@ -64,21 +62,20 @@ export default function ProduceComp({ topicName }: Props) {
               d='M16 3C8.832 3 3 8.832 3 16s5.832 13 13 13s13-5.832 13-13S23.168 3 16 3m0 2c6.087 0 11 4.913 11 11s-4.913 11-11 11S5 22.087 5 16S9.913 5 16 5m-1 5v5h-5v2h5v5h2v-5h5v-2h-5v-5z'
             ></path>
           </svg>
-          Produce
+          Reproduce
         </Button>
       </Box>
       <Dialog onClose={handleClose} open={open}>
-        <DialogTitle sx={{ justifyContent: 'center' }}>Ingest new records</DialogTitle>
+        <DialogTitle sx={{ justifyContent: 'center' }}>Reproduce existing records</DialogTitle>
         <List sx={{ pt: 0, width: 500, display: 'flex', marginTop: -5, justifyContent: 'center' }}>
           <Stack>
             <p>Key (string)</p>
             <div>
               <form noValidate autoComplete='off'>
                 <FormControl sx={{ width: '45ch' }}>
-                  <OutlinedInput
-                    placeholder='key'
+                  <TextField
                     value={newRecords.key}
-                    onChange={e => handleRecordsChange(e, 'key')}
+                    onChange={e => setNewRecords({ ...newRecords, key: e.target.value })}
                   />
                 </FormControl>
               </form>
@@ -87,49 +84,13 @@ export default function ProduceComp({ topicName }: Props) {
             <div>
               <form noValidate autoComplete='off'>
                 <FormControl sx={{ width: '45ch' }}>
-                  <OutlinedInput
-                    placeholder='value'
+                  <TextField
                     value={newRecords.value}
-                    onChange={e => handleRecordsChange(e, 'value')}
+                    onChange={e => setNewRecords({ ...newRecords, value: e.target.value })}
                   />
                 </FormControl>
               </form>
             </div>
-          </Stack>
-        </List>
-        <List sx={{ pt: 0, width: 500, display: 'flex', marginTop: -1, justifyContent: 'center' }}>
-          <Stack>
-            <p>Header</p>
-            <Stack direction='row'>
-              <Stack sx={{ marginRight: 2 }}>
-                <p>Key</p>
-                <div>
-                  <form noValidate autoComplete='off'>
-                    <FormControl sx={{ width: '20ch' }}>
-                      <OutlinedInput
-                        placeholder='key'
-                        value={header.key}
-                        onChange={e => handleHeaderChange(e, 'key')}
-                      />
-                    </FormControl>
-                  </form>
-                </div>
-              </Stack>
-              <Stack>
-                <p>Value</p>
-                <div>
-                  <form noValidate autoComplete='off'>
-                    <FormControl sx={{ width: '20ch' }}>
-                      <OutlinedInput
-                        placeholder='value'
-                        value={header.value}
-                        onChange={e => handleHeaderChange(e, 'value')}
-                      />
-                    </FormControl>
-                  </form>
-                </div>
-              </Stack>
-            </Stack>
           </Stack>
         </List>
         <Stack spacing={1} sx={{ padding: 5 }}>
