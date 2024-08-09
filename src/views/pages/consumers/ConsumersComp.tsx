@@ -170,7 +170,8 @@ export default function ConsumersComp() {
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                alignItems: 'center'
+                alignItems: 'center',
+                paddingLeft: 1
               }}
             >
               <h2>Consumers</h2>

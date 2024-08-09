@@ -55,7 +55,7 @@ export default function SimpleDialogDemo({ data }: Props) {
             d='M220 112v96a20 20 0 0 1-20 20H56a20 20 0 0 1-20-20v-96a20 20 0 0 1 20-20h20a12 12 0 0 1 0 24H60v88h136v-88h-16a12 12 0 0 1 0-24h20a20 20 0 0 1 20 20M96.49 72.49L116 53v83a12 12 0 0 0 24 0V53l19.51 19.52a12 12 0 1 0 17-17l-40-40a12 12 0 0 0-17 0l-40 40a12 12 0 1 0 17 17Z'
           ></path>
         </svg>
-        Export
+        &nbsp;Export
       </Button>
       <Dialog onClose={handleClose} open={open}>
         <DialogTitle sx={{ justifyContent: 'center' }}>Choose a name for export file</DialogTitle>

@@ -23,6 +23,7 @@ import SideComp from './SideComp'
 import Paper from 'src/@core/theme/overrides/paper'
 import { render } from 'nprogress'
 import select from 'src/@core/theme/overrides/select'
+import { auto } from '@popperjs/core'
 
 const columns: GridColDef[] = [
   {
@@ -180,9 +181,11 @@ const TableServerSide = ({ topicName, searchClick, setSearchClick }: Props) => {
   return (
     <>
       {loading || searchLoad ? (
-        <Loader />
+        <Card sx={{ width: '100%', height: 500 }}>
+          <Loader />
+        </Card>
       ) : (
-        <Card>
+        <Card sx={{ width: '100%' }}>
           <Box
             sx={{
               gap: 2,

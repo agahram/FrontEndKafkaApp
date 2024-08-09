@@ -10,11 +10,10 @@ import {
   Stack,
   Typography
 } from '@mui/material'
-import React, { Dispatch, SetStateAction } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import TopButtons from './TopButtons'
 import { Browser } from 'src/context/BrowserContext'
 import { GridRowId } from '@mui/x-data-grid'
-import ProduceComp from './ProduceComp'
 import { auto } from '@popperjs/core'
 
 interface Props {
@@ -36,12 +35,13 @@ export default function SideComp({
   setShowSide,
   setSelectionModel
 }: Props) {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   return (
     <div>
       <Popper
-        sx={{ zIndex: 1200 }}
+        sx={{ zIndex: 1200, marginTop: 3, marginLeft: 3 }}
         open={open}
-        //   anchorEl={anchorEl}
+        anchorEl={anchorEl}
         placement={placement}
         transition
       >
@@ -64,7 +64,6 @@ export default function SideComp({
                   X
                 </Button>
               </Box>
-              <br />
             </Paper>
           </Fade>
         )}

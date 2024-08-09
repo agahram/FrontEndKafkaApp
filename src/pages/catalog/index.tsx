@@ -3,7 +3,7 @@ import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import Stack from '@mui/material/Stack'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import React, { useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { Topic, useTopic } from 'src/context/TopicsContext'
 import CreateTopic from 'src/views/pages/catalog/CreateTopic'
 import Loader from 'src/views/pages/catalog/Loader'
@@ -12,6 +12,9 @@ import SearchComp from 'src/views/pages/catalog/SearchComp'
 import TopicConfig from 'src/views/pages/catalog/configuration/TopicConfig'
 import ExportFile from 'src/views/pages/catalog/ExportFile'
 import ImportFile from 'src/views/pages/catalog/ImportFile'
+import { TextField } from '@mui/material'
+import Icon from 'src/@core/components/icon'
+import { maxWidth } from '@mui/system'
 
 const columns: GridColDef[] = [
   {
@@ -143,23 +146,59 @@ export default function index() {
         <ImportFile />
         <CreateTopic />
       </Stack>
-      <SearchComp setQuery={setQuery} />
+      {/* <SearchComp setQuery={setQuery} /> */}
       {isLoading ? (
         <Loader />
       ) : (
-        <Card>
-          <Box sx={{ height: 700 }}>
-            <DataGrid
-              columns={columns}
-              rows={currentData}
-              initialState={{
-                pagination: {
-                  paginationModel: { page: 0, pageSize: 50 }
-                }
-              }}
-              pageSizeOptions={[5, 10, 20, 50, 100]}
-              getRowId={item => item.name}
-            />
+        <Card sx={{ marginTop: 3 }}>
+          <Box
+            sx={{
+              gap: 2,
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'stretch',
+              justifyContent: 'start'
+              // p: theme => theme.spacing(4, 5, 4, 5)
+            }}
+          >
+            <Box sx={{ padding: 3, marginBottom: -2 }}>
+              <TextField
+                size='small'
+                value={query}
+                onChange={(event: ChangeEvent<HTMLInputElement>) => setQuery(event.target.value)}
+                placeholder='Search'
+                InputProps={{
+                  startAdornment: (
+                    <Box sx={{ mr: 2, display: 'flex' }}>
+                      <Icon icon='mdi:magnify' />
+                    </Box>
+                  )
+                }}
+                sx={{
+                  // width: {
+                  //   xs: 1,
+                  //   sm: 'auto'
+                  // },
+                  width: 300,
+                  '& .MuiInputBase-root > svg': {
+                    mr: 2
+                  }
+                }}
+              />
+            </Box>
+            <Box sx={{ height: 500 }}>
+              <DataGrid
+                columns={columns}
+                rows={currentData}
+                initialState={{
+                  pagination: {
+                    paginationModel: { page: 0, pageSize: 50 }
+                  }
+                }}
+                pageSizeOptions={[5, 10, 20, 50, 100]}
+                getRowId={item => item.name}
+              />
+            </Box>
           </Box>
         </Card>
       )}

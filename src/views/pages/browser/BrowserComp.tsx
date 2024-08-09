@@ -4,6 +4,8 @@ import { Box, Button, Card, CardContent, Grid, Stack, Typography } from '@mui/ma
 import { useBrowser } from 'src/context/BrowserContext'
 import Loader from '../catalog/Loader'
 import ProduceComp from './ProduceComp'
+import { v4 as uuidv4 } from 'uuid'
+import { auto } from '@popperjs/core'
 
 export interface BrowserTopic {
   id: any
@@ -36,7 +38,7 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
       data = val.map((obj: any) => {
         return {
           name: obj.name,
-          id: Date.now().toString(36)
+          id: uuidv4()
         }
       })
       setCurrentTopics(data)
@@ -69,20 +71,26 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
               d='M232.4 114.49L88.32 26.35a16 16 0 0 0-16.2-.3A15.86 15.86 0 0 0 64 39.87v176.26A15.94 15.94 0 0 0 80 232a16.07 16.07 0 0 0 8.36-2.35l144.04-88.14a15.81 15.81 0 0 0 0-27ZM80 215.94V40l143.83 88Z'
             ></path>
           </svg>
-          Fetch
+          &nbsp;Fetch
         </Button>
       </Box>
       {isLoading ? (
         <Loader />
       ) : (
         <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
-          <Card sx={{ width: 250, marginRight: 5 }}>
+          <Card sx={{ width: auto, marginRight: 5, position: 'left', paddingRight: 20 }}>
             <CardContent sx={{ pt: 8, display: 'flex', alignItems: 'left', flexDirection: 'column', paddingTop: -5 }}>
               <Typography variant='h6'>Topics</Typography>
+              <br />
               {currentTopics?.map(el => {
                 return (
                   <div key={el.id}>
-                    <Button variant='text' color='secondary' onClick={() => handleClick(el.name)}>
+                    <Button
+                      variant='text'
+                      color='secondary'
+                      onClick={() => handleClick(el.name)}
+                      sx={{ textTransform: 'none', fontSize: '15px' }}
+                    >
                       {el.name}
                     </Button>
                   </div>
@@ -93,7 +101,20 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
           {isClicked || fetchClick ? (
             <TableComp topicName={name} searchClick={searchClick} setSearchClick={setSearchClick} />
           ) : (
-            <></>
+            // <Card>
+            //   <Box
+            //     sx={{
+            //       gap: 2,
+            //       display: 'flex',
+            //       flexWrap: 'wrap',
+            //       alignItems: 'stretch',
+            //       justifyContent: 'start',
+            //       p: theme => theme.spacing(4, 5, 4, 5)
+            //     }}
+            //   ></Box>
+            // </Card>
+            <Card sx={{ width: '100%', height: 500 }}></Card>
+            // <></>
           )}
         </Box>
       )}

@@ -108,7 +108,7 @@ export default function BasicTabs({ topicName, currentTopics, idArr, setShowSide
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', marginTop: 3, marginLeft: 7 }}>
         <Tabs value={value} onChange={handleChange} aria-label='basic tabs example'>
           <Tab
             label='Meta'
@@ -156,40 +156,42 @@ export default function BasicTabs({ topicName, currentTopics, idArr, setShowSide
           />
         </Tabs>
       </Box>
-      <CustomTabPanel value={value} index={0}>
-        <h3>General</h3>
-        <Divider />
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <h4>Topic</h4>
-          <h5>{topicName}</h5>
-        </Box>
-        <Divider />
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <h4>Partition</h4>
-          <h5>{partition}</h5>
-        </Box>
-        <Divider />
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <h4>Offset</h4>
-          <h5>{offset}</h5>
-        </Box>
-        <Divider />
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <h4>Timestamp</h4>
-          <h5>{time}</h5>
-        </Box>
-        <ReproduceComp topicName={topicName} initialKey={String(jsonKey)} initialValue={String(jsonValue)} />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
-        <h4>
-          <TextWithLineBreaks text={jsonKey} />
-        </h4>
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
-        <h4>
-          <TextWithLineBreaks text={jsonValue} />
-        </h4>
-      </CustomTabPanel>
+      <Box sx={{ marginLeft: 5 }}>
+        <CustomTabPanel value={value} index={0}>
+          <h3>General</h3>
+          <Divider />
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <h4>Topic</h4>
+            <h5>{topicName}</h5>
+          </Box>
+          <Divider />
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <h4>Partition</h4>
+            <h5>{partition}</h5>
+          </Box>
+          <Divider />
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <h4>Offset</h4>
+            <h5>{offset}</h5>
+          </Box>
+          <Divider />
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <h4>Timestamp</h4>
+            <h5>{time}</h5>
+          </Box>
+          <ReproduceComp topicName={topicName} initialKey={String(jsonKey)} initialValue={String(jsonValue)} />
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={1}>
+          <h4>
+            <TextWithLineBreaks text={jsonKey} />
+          </h4>
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={2}>
+          <h4>
+            <TextWithLineBreaks text={jsonValue} />
+          </h4>
+        </CustomTabPanel>
+      </Box>
     </Box>
   )
 }

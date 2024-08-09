@@ -145,7 +145,7 @@ export default function TopicConfigComp({ topicName }: Props) {
           <Card sx={{ padding: 4, marginBottom: 2 }}>
             <Breadcrumb />
           </Card>
-          <Stack direction='row' spacing={7} sx={{ marginBottom: 2, display: 'flex' }}>
+          <Stack direction='row' spacing={2} sx={{ marginBottom: 2, display: 'flex' }}>
             <Card sx={{ width: 300, padding: 4 }}>
               <Box sx={{ alignItems: 'center' }}>
                 <Link
@@ -159,7 +159,7 @@ export default function TopicConfigComp({ topicName }: Props) {
                     })
                   }
                 >
-                  <p>Records</p>
+                  <p style={{ cursor: 'default' }}>Records</p>
                 </Link>
                 <CustomChip label={topic!.recordsCount} skin='light' color='primary' />
               </Box>
