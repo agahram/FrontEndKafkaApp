@@ -101,21 +101,7 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
           {isClicked || fetchClick ? (
             <TableComp topicName={name} searchClick={searchClick} setSearchClick={setSearchClick} />
           ) : (
-            // <Card>
-            //   <Box
-            //     sx={{
-            //       gap: 2,
-            //       display: 'flex',
-            //       flexWrap: 'wrap',
-            //       alignItems: 'stretch',
-            //       justifyContent: 'start',
-            //       p: theme => theme.spacing(4, 5, 4, 5)
-            //     }}
-            //   ></Box>
-            // </Card>
-            // <Card ></Card>
             <Box sx={{ width: '100%', height: 500 }}></Box>
-            // <></>
           )}
         </Box>
       )}
