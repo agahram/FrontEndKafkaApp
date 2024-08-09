@@ -1,4 +1,4 @@
-import { Box, Button, Card, Stack, Typography } from '@mui/material'
+import { Box, Button, Card, Stack, Typography, styled } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import React, { useEffect, useState } from 'react'
 import CustomChip from 'src/@core/components/mui/chip'
@@ -8,6 +8,18 @@ import { log } from 'console'
 import { color } from '@mui/system'
 import SearchComp from '../catalog/SearchComp'
 import Loader from '../catalog/Loader'
+import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
+
+const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: theme.palette.common.white,
+    color: 'rgba(0, 0, 0, 0.87)',
+    boxShadow: theme.shadows[1],
+    fontSize: 12
+  }
+}))
 
 const columns: GridColDef[] = [
   {
@@ -53,7 +65,13 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: any) => {
       if (row.assignedTopics.length !== 0) {
         for (let i = 0; i < row.assignedTopics.length; i++) {
-          return <CustomChip label={row.assignedTopics} skin='light' color='primary' />
+          return (
+            <LightTooltip title={row.assignedTopics}>
+              <div>
+                <CustomChip label={row.assignedTopics} skin='light' color='primary' />
+              </div>
+            </LightTooltip>
+          )
         }
       } else {
         return <CustomChip label='none' skin='light' color='primary' />
