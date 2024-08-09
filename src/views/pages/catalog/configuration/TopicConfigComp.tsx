@@ -12,7 +12,7 @@ import { useTopic } from 'src/context/TopicsContext'
 import CustomChip from 'src/@core/components/mui/chip'
 import Loader from '../Loader'
 import { set } from 'nprogress'
-import { useRouter } from 'next/router'
+import Router, { useRouter } from 'next/router'
 import { auto } from '@popperjs/core'
 
 // ** Data Import
@@ -137,6 +137,7 @@ export default function TopicConfigComp({ topicName }: Props) {
       setCurrentData(newData)
     }
   }, [query])
+
   return (
     <>
       {!isLoading && !loadingConfig ? (
@@ -147,7 +148,17 @@ export default function TopicConfigComp({ topicName }: Props) {
           <Stack direction='row' spacing={7} sx={{ marginBottom: 2, display: 'flex' }}>
             <Card sx={{ width: 300, padding: 4 }}>
               <Box sx={{ alignItems: 'center' }}>
-                <Link key='2' color='inherit' href='/browser' onClick={() => router.push('/browser')}>
+                <Link
+                  key='2'
+                  color='inherit'
+                  // href='/browser'
+                  onClick={() =>
+                    router.push({
+                      pathname: '/browser',
+                      query: { name: topicName }
+                    })
+                  }
+                >
                   <p>Records</p>
                 </Link>
                 <CustomChip label={topic!.recordsCount} skin='light' color='primary' />

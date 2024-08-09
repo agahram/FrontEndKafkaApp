@@ -63,8 +63,9 @@ export default function BasicTabs({ topicName, currentTopics, idArr, setShowSide
     let new_offset = 0
     let dataObj = ''
     let customPrettyJSON = ''
+
     for (let i = 0; i < currentTopics.length; i++) {
-      if (currentTopics[i].timestamp === idArr[0]) {
+      if (currentTopics[i].timestamp === idArr[idArr.length - 1]) {
         new_time = currentTopics[i].timestamp
         new_partition = currentTopics[i].partitions
         new_offset = currentTopics[i].offset
@@ -99,7 +100,7 @@ export default function BasicTabs({ topicName, currentTopics, idArr, setShowSide
         setjsonValue(new_value)
       }
     }
-  }, [])
+  }, [idArr])
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)

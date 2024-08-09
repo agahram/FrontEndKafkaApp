@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default function ProduceComp({ topicName }: Props) {
-  const { produceMessage, consumeMessages } = useBrowser()
+  const { produceMessage, consumeMessages, handlePagination } = useBrowser()
   const [open, setOpen] = useState(false)
   const [newRecords, setNewRecords] = useState({
     key: '',
@@ -24,22 +24,40 @@ export default function ProduceComp({ topicName }: Props) {
 
   const handleClose = () => {
     setOpen(false)
+    setNewRecords({
+      key: '',
+      value: ''
+    })
+    setHeader({
+      key: '',
+      value: ''
+    })
   }
 
   const handleNewRecord = () => {
-    produceMessage({
-      topic: topicName,
-      key: newRecords.key,
-      value: newRecords.value,
-      headers: [
-        {
-          key: header.key,
-          value: header.value
-        }
-      ]
-    })
-    consumeMessages(topicName)
-    setOpen(false)
+    if (topicName) {
+      produceMessage({
+        topic: topicName,
+        key: newRecords.key,
+        value: newRecords.value,
+        headers: [
+          {
+            key: header.key,
+            value: header.value
+          }
+        ]
+      })
+      handlePagination({ page: 0, pageSize: 7 }, topicName)
+      setOpen(false)
+      setNewRecords({
+        key: '',
+        value: ''
+      })
+      setHeader({
+        key: '',
+        value: ''
+      })
+    }
   }
   const handleRecordsChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, key: string) => {
     setNewRecords({

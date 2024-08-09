@@ -10,8 +10,6 @@ import Loader from 'src/views/pages/catalog/Loader'
 import MoreButton from 'src/views/pages/catalog/MoreButton'
 import SearchComp from 'src/views/pages/catalog/SearchComp'
 import TopicConfig from 'src/views/pages/catalog/configuration/TopicConfig'
-import { saveAs } from 'file-saver'
-import * as XLSX from 'xlsx'
 import ExportFile from 'src/views/pages/catalog/ExportFile'
 import ImportFile from 'src/views/pages/catalog/ImportFile'
 
@@ -21,7 +19,6 @@ const columns: GridColDef[] = [
     headerName: 'Topic',
     width: 300,
     renderCell: ({ row }: any) => {
-      // return <a href='./configuration'>{row.name}</a>
       return <TopicConfig name={row.name} />
     }
   },
@@ -41,7 +38,6 @@ const columns: GridColDef[] = [
     headerName: '',
     width: 80,
     renderCell: ({ row }: any) => {
-      //   console.log(row)
       return <MoreButton name={row.name} />
     }
   }

@@ -22,6 +22,7 @@ import {
 import SideComp from './SideComp'
 import Paper from 'src/@core/theme/overrides/paper'
 import { render } from 'nprogress'
+import select from 'src/@core/theme/overrides/select'
 
 const columns: GridColDef[] = [
   {
@@ -286,6 +287,7 @@ const TableServerSide = ({ topicName, searchClick, setSearchClick }: Props) => {
                 } else {
                   setSelectionModel(selection)
                 }
+                console.log('idArr', idArr, 'selectionModel', selectionModel)
               }}
             />
           </Box>

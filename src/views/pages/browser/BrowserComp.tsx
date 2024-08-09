@@ -10,7 +10,7 @@ export interface BrowserTopic {
   name: string
 }
 
-export default function BrowserComp() {
+export default function BrowserComp(props: { topicName: string | string[] | undefined }) {
   const { isLoading, consumeMessages, handlePagination } = useBrowser()
   const { browserTopics, getBrowserTopics } = useBrowser()
   const [currentTopics, setCurrentTopics] = useState<BrowserTopic[]>()
@@ -18,6 +18,12 @@ export default function BrowserComp() {
   const [isClicked, setIsClicked] = useState(false)
   const [fetchClick, setFetchClick] = useState(false)
   const [searchClick, setSearchClick] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (props.topicName) {
+      handleClick(props.topicName as string)
+    }
+  }, [])
 
   useEffect(() => {
     getBrowserTopics()
@@ -47,7 +53,7 @@ export default function BrowserComp() {
   useEffect(() => {
     if (name) {
       setSearchClick(false)
-      handlePagination({ page: 1, pageSize: 7 }, name)
+      handlePagination({ page: 0, pageSize: 7 }, name)
       setFetchClick(false)
     }
   }, [fetchClick])
@@ -71,7 +77,7 @@ export default function BrowserComp() {
       ) : (
         <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
           <Card sx={{ width: 250, marginRight: 5 }}>
-            <CardContent sx={{ pt: 8, display: 'flex', alignItems: 'left', flexDirection: 'column' }}>
+            <CardContent sx={{ pt: 8, display: 'flex', alignItems: 'left', flexDirection: 'column', paddingTop: -5 }}>
               <Typography variant='h6'>Topics</Typography>
               {currentTopics?.map(el => {
                 return (
