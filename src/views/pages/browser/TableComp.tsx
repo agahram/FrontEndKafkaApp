@@ -181,9 +181,9 @@ const TableServerSide = ({ topicName, searchClick, setSearchClick }: Props) => {
   return (
     <>
       {loading || searchLoad ? (
-        <Card sx={{ width: '100%', height: 500 }}>
+        <Box sx={{ width: '100%', height: 500 }}>
           <Loader />
-        </Card>
+        </Box>
       ) : (
         <Card sx={{ width: '100%' }}>
           <Box

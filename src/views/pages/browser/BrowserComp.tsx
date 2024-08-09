@@ -113,7 +113,8 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
             //     }}
             //   ></Box>
             // </Card>
-            <Card sx={{ width: '100%', height: 500 }}></Card>
+            // <Card ></Card>
+            <Box sx={{ width: '100%', height: 500 }}></Box>
             // <></>
           )}
         </Box>

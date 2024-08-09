@@ -175,10 +175,6 @@ export default function index() {
                   )
                 }}
                 sx={{
-                  // width: {
-                  //   xs: 1,
-                  //   sm: 'auto'
-                  // },
                   width: 300,
                   '& .MuiInputBase-root > svg': {
                     mr: 2
