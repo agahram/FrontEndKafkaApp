@@ -224,7 +224,7 @@ export default function ConsumersComp() {
                   alignItems: 'center'
                 }}
               >
-                <p style={{ color: '#787eff', fontWeight: 600 }}>Rebalancing</p>
+                <p style={{ color: '#787eff', fontWeight: 600 }}>Rebalancing&nbsp;</p>
                 <Button
                   variant='outlined'
                   color='secondary'

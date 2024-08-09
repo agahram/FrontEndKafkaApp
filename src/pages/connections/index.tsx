@@ -1,6 +1,5 @@
 // export default SecondPage
 // ** Next Imports
-import { GetStaticProps, InferGetStaticPropsType } from 'next/types'
 
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
