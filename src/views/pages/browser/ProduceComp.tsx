@@ -1,5 +1,6 @@
 import { Box, Button, Dialog, DialogTitle, FormControl, List, OutlinedInput, Stack } from '@mui/material'
 import React, { Dispatch, SetStateAction, useState } from 'react'
+import toast from 'react-hot-toast'
 import { Produce, useBrowser } from 'src/context/BrowserContext'
 
 interface Props {
@@ -35,7 +36,7 @@ export default function ProduceComp({ topicName }: Props) {
   }
 
   const handleNewRecord = () => {
-    if (topicName) {
+    if (topicName && newRecords.key && newRecords.value && header) {
       produceMessage({
         topic: topicName,
         key: newRecords.key,
@@ -57,6 +58,8 @@ export default function ProduceComp({ topicName }: Props) {
         key: '',
         value: ''
       })
+    } else {
+      toast('All fields are required to fill')
     }
   }
   const handleRecordsChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, key: string) => {

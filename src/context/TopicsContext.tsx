@@ -158,15 +158,14 @@ const TopicProvider = ({ children }: Props) => {
   const deleteTopic = async (name: string) => {
     try {
       setIsLoading(true)
-      const response = await fetch(`http://localhost:5000/api/KafkaAdmin/delete-topic?topicName=${name}`, {
+      await fetch(`http://localhost:5000/api/KafkaAdmin/delete-topic?topicName=${name}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
         }
       })
-      let data = await response.json()
     } catch (err: any) {
-      console.log(err.message)
+      console.log('ERROR', err.message)
     }
     setTopics(await getTopics())
     setIsLoading(false)

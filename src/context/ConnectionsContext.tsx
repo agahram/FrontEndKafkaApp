@@ -21,6 +21,8 @@ interface InterfaceConnection {
   setTestConnection: (testConnection: boolean) => void
   getClusterInfo: () => void
   rows: undefined | { [s: string]: any }
+  isConnected: string
+  setIsConnected: (arg: string) => void
 }
 
 const InitialValue = {
@@ -33,7 +35,9 @@ const InitialValue = {
   testConnection: false,
   setTestConnection: (testConnection: boolean) => null,
   getClusterInfo: () => null,
-  rows: undefined
+  rows: undefined,
+  isConnected: '',
+  setIsConnected: (arg: string) => null
 }
 
 const ConnectionContext = createContext<InterfaceConnection>(InitialValue)
@@ -42,6 +46,7 @@ const ConnectionProvider = ({ children }: Props) => {
   const [connections, setConnections] = useState<Connection[]>([])
   const [testConnection, setTestConnection] = useState(false)
   const [rows, setRows] = useState()
+  const [isConnected, setIsConnected] = useState('')
 
   const addConnections = async (connection: Connection) => {
     // async function fetchConnections() {
@@ -106,6 +111,12 @@ const ConnectionProvider = ({ children }: Props) => {
         'Content-Type': 'application/json'
       }
     })
+    if (response.ok) {
+      setIsConnected(bootStrapServer)
+    } else {
+      setIsConnected('')
+    }
+
     return response
   }
   const editConnection = async (connection: Connection) => {
@@ -117,7 +128,6 @@ const ConnectionProvider = ({ children }: Props) => {
         'Content-Type': 'application/json'
       }
     })
-    console.log(response)
     let data = await getConnections()
     setConnections(data)
   }
@@ -153,7 +163,9 @@ const ConnectionProvider = ({ children }: Props) => {
         testConnection,
         setTestConnection,
         getClusterInfo,
-        rows
+        rows,
+        isConnected,
+        setIsConnected
       }}
     >
       {children}

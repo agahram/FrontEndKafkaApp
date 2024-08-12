@@ -1,5 +1,5 @@
 // ** React Imports
-import { JSXElementConstructor, ReactElement, ReactFragment, ReactPortal, use, useState } from 'react'
+import { JSXElementConstructor, ReactElement, ReactFragment, ReactPortal, use, useEffect, useState } from 'react'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -17,6 +17,7 @@ import ViewCluster from './ViewCluster'
 import { ThemeContext } from '@emotion/react'
 import { Box } from '@mui/material'
 import Icon from 'src/@core/components/icon'
+import Loader from '../catalog/Loader'
 
 interface Props {
   name: string
@@ -28,16 +29,24 @@ const DialogEditUserInfo = ({ name, details, id }: Props) => {
   // ** States
   const [isLoading, setIsLoading] = useState(false)
   const [isConnected, setIsConnected] = useState(false)
-  const { connections, testConnection, checkConnection, setTestConnection } = useConnection()
+  const { checkConnection, setTestConnection } = useConnection()
+  const context = useConnection()
+
+  useEffect(() => {
+    if (details === context.isConnected) {
+      setIsConnected(true)
+    }
+  }, [context.isConnected])
 
   function handleClickDisconnect() {
     setIsConnected(false)
+    context.setIsConnected('')
   }
 
   async function handleClickConnect() {
     setIsLoading(true)
     let data = await checkConnection(details)
-    console.log('DATA', data)
+    // console.log('DATA', data)
     if (data?.ok) {
       setTestConnection(data?.status === 200)
       setIsConnected(true)
@@ -46,40 +55,6 @@ const DialogEditUserInfo = ({ name, details, id }: Props) => {
       toast('Cannot connect')
       setIsLoading(false)
     }
-  }
-
-  function Loader() {
-    return (
-      <Stack
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
-      >
-        <p>Loading...</p>
-        <svg xmlns='http://www.w3.org/2000/svg' width='3em' height='4em' viewBox='0 0 24 24'>
-          <path
-            fill='none'
-            stroke='currentColor'
-            strokeDasharray={15}
-            strokeDashoffset={15}
-            strokeLinecap='round'
-            strokeWidth={2}
-            d='M12 3C16.9706 3 21 7.02944 21 12'
-          >
-            <animate fill='freeze' attributeName='stroke-dashoffset' dur='0.3s' values='15;0'></animate>
-            <animateTransform
-              attributeName='transform'
-              dur='1.5s'
-              repeatCount='indefinite'
-              type='rotate'
-              values='0 12 12;360 12 12'
-            ></animateTransform>
-          </path>
-        </svg>
-      </Stack>
-    )
   }
 
   return (
@@ -117,7 +92,7 @@ const DialogEditUserInfo = ({ name, details, id }: Props) => {
           <br />
           {isLoading ? (
             <Loader />
-          ) : testConnection && isConnected ? (
+          ) : isConnected ? (
             <Stack spacing={1.5}>
               <ViewCluster name={name} />
               <Button

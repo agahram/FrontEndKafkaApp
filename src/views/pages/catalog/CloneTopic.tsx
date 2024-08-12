@@ -73,7 +73,7 @@ export default function SimpleDialogDemo({ name }: Props) {
                 <FormControl sx={{ width: '45ch' }}>
                   <OutlinedInput
                     placeholder='oldName'
-                    defaultValue={name}
+                    // defaultValue={name}
                     value={name}
                     onChange={e => handleInputChange(e, 'oldName')}
                     disabled

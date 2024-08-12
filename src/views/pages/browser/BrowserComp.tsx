@@ -78,7 +78,7 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
         <Loader />
       ) : (
         <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
-          <Card sx={{ width: auto, marginRight: 5, position: 'left', paddingRight: 20 }}>
+          <Card sx={{ width: auto, marginRight: 5, position: 'left', padding: 5 }}>
             <CardContent sx={{ pt: 8, display: 'flex', alignItems: 'left', flexDirection: 'column', paddingTop: -5 }}>
               <Typography variant='h6'>Topics</Typography>
               <br />
