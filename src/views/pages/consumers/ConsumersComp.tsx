@@ -162,7 +162,7 @@ export default function ConsumersComp() {
       setCurrentData(newData)
     } else {
       let show_data = consumers.filter((consumer: any) => consumer.state === consumerState)
-      console.log(show_data)
+      // console.log(show_data)
       let newData = show_data.map((obj: any) => {
         return {
           group: obj.group,

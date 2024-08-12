@@ -84,11 +84,6 @@ const BrowserProvider = ({ children }: Props) => {
   }
 
   const produceMessage = async (obj: Produce) => {
-    console.log('initial', obj)
-
-    console.log('json', JSON.stringify(obj))
-    console.log(typeof obj)
-
     try {
       const response = await fetch(`http://localhost:5000/api/KafkaAdmin/produce-message`, {
         method: 'POST',
@@ -104,8 +99,6 @@ const BrowserProvider = ({ children }: Props) => {
   }
 
   const handlePagination = async (pagination: { page: number; pageSize: number }, topicName: string) => {
-    console.log('----', topicName, pagination.pageSize, pagination.page)
-
     try {
       setLoading(true)
       const response = await fetch(
@@ -118,8 +111,7 @@ const BrowserProvider = ({ children }: Props) => {
         }
       )
       let data = await response.json()
-      console.log('pagination data:', data)
-
+      // console.log('pagination data:', data)
       setBrowsers(data)
       setLoading(false)
     } catch (err: any) {
