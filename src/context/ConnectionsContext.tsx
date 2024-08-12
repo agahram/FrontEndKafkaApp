@@ -100,8 +100,6 @@ const ConnectionProvider = ({ children }: Props) => {
     setConnections(await getConnections())
   }
   const checkConnection = async (bootStrapServer: string) => {
-    // console.log(bootStrapServer)
-
     const response = await fetch(`http://localhost:5000/api/KafkaCluster/check-connection?address=${bootStrapServer}`, {
       method: 'GET',
       headers: {
