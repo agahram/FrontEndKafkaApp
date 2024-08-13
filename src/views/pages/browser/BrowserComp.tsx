@@ -113,7 +113,8 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
                   '& .MuiInputBase-root > svg': {
                     mr: 2
                   },
-                  marginTop: 2
+                  marginTop: 3,
+                  marginBottom: -3
                 }}
               />
               <br />
