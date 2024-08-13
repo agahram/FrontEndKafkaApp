@@ -29,7 +29,7 @@ const DialogEditUserInfo = ({ name, details, id }: Props) => {
   // ** States
   const [isLoading, setIsLoading] = useState(false)
   const [isConnected, setIsConnected] = useState(false)
-  const { checkConnection, setTestConnection } = useConnection()
+  const { checkConnection, setTestConnection, getConnections, connections } = useConnection()
   const context = useConnection()
 
   useEffect(() => {
@@ -37,6 +37,10 @@ const DialogEditUserInfo = ({ name, details, id }: Props) => {
       setIsConnected(true)
     }
   }, [context.isConnected])
+
+  // useEffect(() => {
+  //   handleClickConnect()
+  // }, [getConnections])
 
   function handleClickDisconnect() {
     setIsConnected(false)
