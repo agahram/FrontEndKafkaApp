@@ -173,7 +173,8 @@ export default function index() {
                   width: 300,
                   '& .MuiInputBase-root > svg': {
                     mr: 2
-                  }
+                  },
+                  padding: 2
                 }}
               />
             </Box>

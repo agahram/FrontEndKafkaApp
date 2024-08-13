@@ -2,11 +2,11 @@
 import { HorizontalNavItemsType } from 'src/@core/layouts/types'
 
 const navigation = (): HorizontalNavItemsType => [
-  // {
-  //   title: 'Home',
-  //   path: '/home',
-  //   icon: 'mdi:home-outline',
-  // },
+  {
+    title: 'Connections',
+    path: '/connections',
+    icon: 'mdi:access-point'
+  }
 ]
 
 export default navigation

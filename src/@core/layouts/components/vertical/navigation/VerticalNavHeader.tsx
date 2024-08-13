@@ -127,7 +127,7 @@ const VerticalNavHeader = (props: Props) => {
       {userNavMenuBranding ? (
         userNavMenuBranding(props)
       ) : (
-        <LinkStyled href='/connections'>
+        <LinkStyled href='/'>
           <svg width={40} fill='none' height={22} viewBox='0 0 268 150' xmlns='http://www.w3.org/2000/svg'>
             <rect
               rx='25.1443'
