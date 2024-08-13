@@ -81,7 +81,7 @@ const TableServerSide = ({ topicName, searchClick, setSearchClick }: Props) => {
   } = useBrowser()
   const [currentTopics, setCurrentTopics] = useState<Browser[]>([])
   const [paginationModel, setPaginationModel] = useState({
-    pageSize: 7,
+    pageSize: 5,
     page: 0
   })
   const [searchValue, setSearchValue] = useState<string>('')
