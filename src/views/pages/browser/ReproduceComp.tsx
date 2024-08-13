@@ -51,7 +51,7 @@ export default function ReproduceComp({ topicName, initialKey, initialValue }: P
           }
         ]
       })
-      handlePagination({ page: 0, pageSize: 7 }, topicName)
+      handlePagination({ page: 0, pageSize: 5 }, topicName)
       setOpen(false)
       setNewRecords({
         key: '',

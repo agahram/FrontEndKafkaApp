@@ -48,7 +48,7 @@ export default function ProduceComp({ topicName }: Props) {
           }
         ]
       })
-      handlePagination({ page: 0, pageSize: 7 }, topicName)
+      handlePagination({ page: 0, pageSize: 5 }, topicName)
       setOpen(false)
       setNewRecords({
         key: '',

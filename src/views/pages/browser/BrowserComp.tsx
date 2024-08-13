@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import TableComp from './TableComp'
-import { Box, Button, Card, CardContent, Grid, Stack, Typography } from '@mui/material'
+import { Box, Button, Card, CardContent, Grid, Stack, TextField, Typography } from '@mui/material'
 import { useBrowser } from 'src/context/BrowserContext'
 import Loader from '../catalog/Loader'
 import ProduceComp from './ProduceComp'
 import { v4 as uuidv4 } from 'uuid'
 import { auto } from '@popperjs/core'
+import Icon from 'src/@core/components/icon'
 
 export interface BrowserTopic {
   id: any
@@ -20,6 +21,7 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
   const [isClicked, setIsClicked] = useState(false)
   const [fetchClick, setFetchClick] = useState(false)
   const [searchClick, setSearchClick] = useState<boolean>(false)
+  const [query, setQuery] = useState('')
 
   useEffect(() => {
     if (props.topicName) {
@@ -44,6 +46,19 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
       setCurrentTopics(data)
     }
   }, [browserTopics])
+
+  useEffect(() => {
+    let search_data = browserTopics.filter((browserTopic: any) => {
+      return browserTopic.name.toLowerCase().includes(query.toLowerCase())
+    })
+    let newData = search_data.map((obj: any) => {
+      return {
+        name: obj.name,
+        id: uuidv4()
+      }
+    })
+    setCurrentTopics(newData)
+  }, [query])
 
   function handleClick(name: string) {
     setIsClicked(true)
@@ -78,9 +93,29 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
         <Loader />
       ) : (
         <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
-          <Card sx={{ width: auto, marginRight: 5, position: 'left', padding: 5 }}>
+          <Card sx={{ width: auto, minWidth: 280, minHeight: 400, marginRight: 5, position: 'left', padding: 5 }}>
             <CardContent sx={{ pt: 8, display: 'flex', alignItems: 'left', flexDirection: 'column', paddingTop: -5 }}>
               <Typography variant='h6'>Topics</Typography>
+              <TextField
+                size='small'
+                value={query}
+                onChange={(event: ChangeEvent<HTMLInputElement>) => setQuery(event.target.value)}
+                placeholder='Search'
+                InputProps={{
+                  startAdornment: (
+                    <Box sx={{ mr: 2, display: 'flex' }}>
+                      <Icon icon='mdi:magnify' />
+                    </Box>
+                  )
+                }}
+                sx={{
+                  width: 200,
+                  '& .MuiInputBase-root > svg': {
+                    mr: 2
+                  },
+                  marginTop: 2
+                }}
+              />
               <br />
               {currentTopics?.map(el => {
                 return (
@@ -101,7 +136,11 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
           {isClicked || fetchClick ? (
             <TableComp topicName={name} searchClick={searchClick} setSearchClick={setSearchClick} />
           ) : (
-            <Box sx={{ width: '100%', height: 500 }}></Box>
+            <Box sx={{ width: '100%', height: 500 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 40 }}>
+                <h2>Select a data stream or view from the left</h2>
+              </Box>
+            </Box>
           )}
         </Box>
       )}

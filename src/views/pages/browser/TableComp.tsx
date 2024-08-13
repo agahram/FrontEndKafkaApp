@@ -276,7 +276,7 @@ const TableServerSide = ({ topicName, searchClick, setSearchClick }: Props) => {
               columns={columns}
               checkboxSelection
               // disableRowSelectionOnClick
-              pageSizeOptions={[7, 10, 25, 50, 100]}
+              pageSizeOptions={[5, 10, 25, 50, 100]}
               getRowId={item => item.id}
               paginationModel={paginationModel}
               onPaginationModelChange={setPaginationModel}

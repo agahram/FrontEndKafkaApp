@@ -46,7 +46,7 @@ const DialogEditUserInfo = ({ name, details, id }: Props) => {
   async function handleClickConnect() {
     setIsLoading(true)
     let data = await checkConnection(details)
-    // console.log('DATA', data)
+
     if (data?.ok) {
       setTestConnection(data?.status === 200)
       setIsConnected(true)
