@@ -70,7 +70,7 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
   useEffect(() => {
     if (name) {
       setSearchClick(false)
-      handlePagination({ page: 0, pageSize: 7 }, name)
+      handlePagination({ page: 0, pageSize: 5 }, name)
       setFetchClick(false)
     }
   }, [fetchClick])
