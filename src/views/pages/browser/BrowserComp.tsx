@@ -105,7 +105,9 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
         <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
           <Card sx={{ width: auto, minWidth: 280, minHeight: 400, marginRight: 5, position: 'left', padding: 5 }}>
             <CardContent sx={{ pt: 8, display: 'flex', alignItems: 'left', flexDirection: 'column', paddingTop: -5 }}>
-              <Typography variant='h6'>Topics</Typography>
+              <Typography variant='h6' sx={{ color: '#5C61E6' }}>
+                Topics
+              </Typography>
               <TextField
                 size='small'
                 value={query}
@@ -131,14 +133,19 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
               {currentTopics?.map(el => {
                 return (
                   <div key={el.id}>
-                    <Button
-                      variant='text'
-                      color='secondary'
+                    <a
+                      // variant='text'
+                      // color='secondary'
                       onClick={() => handleClick(el.name)}
-                      sx={{ textTransform: 'none', fontSize: '15px' }}
+                      style={{
+                        textTransform: 'none',
+                        fontSize: '15px',
+                        cursor: 'default',
+                        fontWeight: 400
+                      }}
                     >
                       {el.name}
-                    </Button>
+                    </a>
                   </div>
                 )
               })}

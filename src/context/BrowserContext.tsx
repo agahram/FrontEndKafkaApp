@@ -98,11 +98,14 @@ const BrowserProvider = ({ children }: Props) => {
         }
       })
       if (response.ok) {
-        setTimeout(() => {
-          handlePagination({ page: 0, pageSize: 5 }, obj.topic)
-          getRecordsCount(obj.topic)
-          setProduceLoad(false)
-        }, 7000)
+        // setTimeout(() => {
+        //   handlePagination({ page: 0, pageSize: 5 }, obj.topic)
+        //   getRecordsCount(obj.topic)
+        //   setProduceLoad(false)
+        // }, 7000)
+        handlePagination({ page: 0, pageSize: 5 }, obj.topic)
+        getRecordsCount(obj.topic)
+        setProduceLoad(false)
       }
     } catch (err: any) {
       console.log(err.message)
