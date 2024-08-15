@@ -133,19 +133,19 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
               {currentTopics?.map(el => {
                 return (
                   <div key={el.id}>
-                    <a
-                      // variant='text'
-                      // color='secondary'
+                    <Button
+                      variant='text'
+                      color='secondary'
                       onClick={() => handleClick(el.name)}
-                      style={{
+                      sx={{
                         textTransform: 'none',
-                        fontSize: '15px',
-                        cursor: 'default',
-                        fontWeight: 400
+                        fontSize: '15px'
+                        // cursor: 'default',
+                        // fontWeight: 400
                       }}
                     >
                       {el.name}
-                    </a>
+                    </Button>
                   </div>
                 )
               })}
