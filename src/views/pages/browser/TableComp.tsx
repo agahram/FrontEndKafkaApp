@@ -70,6 +70,7 @@ const TableServerSide = ({ topicName, searchClick, setSearchClick }: Props) => {
     browsers,
     consumeMessages,
     loading,
+    produceLoad,
     searchByPartitions,
     searchLoad,
     searchByKeys,
@@ -102,6 +103,7 @@ const TableServerSide = ({ topicName, searchClick, setSearchClick }: Props) => {
   useEffect(() => {
     if (topicName) {
       // consumeMessages(topicName)
+
       handlePagination(paginationModel, topicName)
       getRecordsCount(topicName)
     }
@@ -177,10 +179,11 @@ const TableServerSide = ({ topicName, searchClick, setSearchClick }: Props) => {
   const handleSearchChange = (event: SelectChangeEvent) => {
     setSearchChoice(event.target.value)
   }
+  console.log('produce load', produceLoad)
 
   return (
     <>
-      {loading || searchLoad ? (
+      {loading || searchLoad || produceLoad ? (
         <Box sx={{ width: '100%', height: 500 }}>
           <Loader />
         </Box>

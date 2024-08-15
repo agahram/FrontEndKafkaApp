@@ -14,7 +14,7 @@ export interface BrowserTopic {
 }
 
 export default function BrowserComp(props: { topicName: string | string[] | undefined }) {
-  const { isLoading, consumeMessages, handlePagination } = useBrowser()
+  const { isLoading, consumeMessages, handlePagination, getRecordsCount } = useBrowser()
   const { browserTopics, getBrowserTopics } = useBrowser()
   const [currentTopics, setCurrentTopics] = useState<BrowserTopic[]>()
   const [name, setName] = useState('')
@@ -67,10 +67,20 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
   function handleFetch() {
     setFetchClick(true)
   }
+  // useEffect(() => {
+  //   if (name) {
+  //     setSearchClick(false)
+  //     handlePagination({ page: 0, pageSize: 5 }, name)
+  //     getRecordsCount(name)
+  //     setFetchClick(false)
+  //   }
+  // }, [fetchClick])
+
   useEffect(() => {
     if (name) {
       setSearchClick(false)
       handlePagination({ page: 0, pageSize: 5 }, name)
+      getRecordsCount(name)
       setFetchClick(false)
     }
   }, [fetchClick])

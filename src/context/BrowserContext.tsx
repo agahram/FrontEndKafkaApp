@@ -1,5 +1,6 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react'
 import { Topic } from './TopicsContext'
+import { log } from 'console'
 
 export interface Browser {
   timestamp: string
@@ -32,6 +33,7 @@ interface InterfaceBrowser {
   isLoading: boolean
   loading: boolean
   searchLoad: boolean
+  produceLoad: boolean
 }
 
 interface Props {
@@ -53,7 +55,8 @@ const InitialValue = {
   getBrowserTopics: () => null,
   isLoading: false,
   loading: false,
-  searchLoad: false
+  searchLoad: false,
+  produceLoad: false
 }
 
 const BrowserContext = createContext<InterfaceBrowser>(InitialValue)
@@ -65,6 +68,7 @@ const BrowserProvider = ({ children }: Props) => {
   const [loading, setLoading] = useState(false)
   const [searchLoad, setSearchLoad] = useState(false)
   const [recordsCount, setRecordsCount] = useState(0)
+  const [produceLoad, setProduceLoad] = useState(false)
 
   const getBrowserTopics = async () => {
     try {
@@ -85,6 +89,7 @@ const BrowserProvider = ({ children }: Props) => {
 
   const produceMessage = async (obj: Produce) => {
     try {
+      setProduceLoad(true)
       const response = await fetch(`http://localhost:5000/api/KafkaAdmin/produce-message`, {
         method: 'POST',
         body: JSON.stringify(obj),
@@ -92,7 +97,13 @@ const BrowserProvider = ({ children }: Props) => {
           'Content-Type': 'application/json'
         }
       })
-      let data = await response.json()
+      if (response.ok) {
+        setTimeout(() => {
+          handlePagination({ page: 0, pageSize: 5 }, obj.topic)
+          getRecordsCount(obj.topic)
+          setProduceLoad(false)
+        }, 7000)
+      }
     } catch (err: any) {
       console.log(err.message)
     }
@@ -111,7 +122,7 @@ const BrowserProvider = ({ children }: Props) => {
         }
       )
       let data = await response.json()
-      // console.log('pagination data:', data)
+      console.log('pagination data:', data)
       setBrowsers(data)
       setLoading(false)
     } catch (err: any) {
@@ -245,6 +256,8 @@ const BrowserProvider = ({ children }: Props) => {
       )
       let data = await response.json()
       setRecordsCount(data)
+      console.log('-----', data)
+
       return data
     } catch (err: any) {
       console.log(err.message)
@@ -268,7 +281,8 @@ const BrowserProvider = ({ children }: Props) => {
         getBrowserTopics,
         isLoading,
         loading,
-        searchLoad
+        searchLoad,
+        produceLoad
       }}
     >
       {children}
