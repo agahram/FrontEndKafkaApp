@@ -1,6 +1,18 @@
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import TableComp from './TableComp'
-import { Box, Button, Card, CardContent, Grid, Stack, TextField, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  ButtonProps,
+  Card,
+  CardContent,
+  Divider,
+  Grid,
+  Stack,
+  TextField,
+  Typography,
+  styled
+} from '@mui/material'
 import { useBrowser } from 'src/context/BrowserContext'
 import Loader from '../catalog/Loader'
 import ProduceComp from './ProduceComp'
@@ -22,6 +34,7 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
   const [fetchClick, setFetchClick] = useState(false)
   const [searchClick, setSearchClick] = useState<boolean>(false)
   const [query, setQuery] = useState('')
+  const [style, setStyle] = useState({ hover: false })
 
   useEffect(() => {
     if (props.topicName) {
@@ -67,14 +80,6 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
   function handleFetch() {
     setFetchClick(true)
   }
-  // useEffect(() => {
-  //   if (name) {
-  //     setSearchClick(false)
-  //     handlePagination({ page: 0, pageSize: 5 }, name)
-  //     getRecordsCount(name)
-  //     setFetchClick(false)
-  //   }
-  // }, [fetchClick])
 
   useEffect(() => {
     if (name) {
@@ -84,6 +89,40 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
       setFetchClick(false)
     }
   }, [fetchClick])
+
+  const BootstrapButton = styled(Button)<ButtonProps>({
+    boxShadow: 'none',
+    textTransform: 'none',
+    fontSize: 16,
+    padding: '6px 12px',
+    border: '1px solid',
+    lineHeight: 1.5,
+    backgroundColor: '#0D6EFD !important',
+    borderColor: '#0D6EFD !important',
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"'
+    ].join(','),
+
+    '&:active': {
+      boxShadow: 'none',
+      backgroundColor: '#0A58CA !important',
+      borderColor: '#0A53BE !important'
+    },
+    '&:focus, &.Mui-focusVisible': {
+      backgroundColor: '#0B5ED7 !important',
+      borderColor: '#0A58CA !important',
+      boxShadow: '0 0 0 0.25rem rgba(49,132,253,0.5) !important'
+    }
+  })
 
   return (
     <div>
@@ -105,9 +144,11 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
         <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
           <Card sx={{ width: auto, minWidth: 280, minHeight: 400, marginRight: 5, position: 'left', padding: 5 }}>
             <CardContent sx={{ pt: 8, display: 'flex', alignItems: 'left', flexDirection: 'column', paddingTop: -5 }}>
-              <Typography variant='h6' sx={{ color: '#5C61E6' }}>
-                Topics
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'start', justifyContent: 'left', marginLeft: -4 }}>
+                <Typography variant='h6' sx={{ color: '#5C61E6', marginTop: -5 }}>
+                  Topics
+                </Typography>
+              </Box>
               <TextField
                 size='small'
                 value={query}
@@ -121,14 +162,16 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
                   )
                 }}
                 sx={{
-                  width: 200,
+                  width: 250,
                   '& .MuiInputBase-root > svg': {
                     mr: 2
                   },
-                  marginTop: 3,
-                  marginBottom: -3
+                  marginTop: 2,
+                  marginBottom: -3,
+                  marginLeft: -6
                 }}
               />
+
               <br />
               {currentTopics?.map(el => {
                 return (
@@ -139,16 +182,21 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
                       onClick={() => handleClick(el.name)}
                       sx={{
                         textTransform: 'none',
-                        fontSize: '15px'
-                        // cursor: 'default',
-                        // fontWeight: 400
+                        fontSize: '15px',
+                        marginLeft: -20,
+                        minWidth: 350
                       }}
+                      onMouseEnter={() => setStyle({ hover: true })}
+                      onMouseLeave={() => setStyle({ hover: false })}
                     >
                       {el.name}
                     </Button>
                   </div>
                 )
               })}
+              <BootstrapButton variant='contained' disableRipple>
+                Bootstrap
+              </BootstrapButton>
             </CardContent>
           </Card>
           {isClicked || fetchClick ? (
