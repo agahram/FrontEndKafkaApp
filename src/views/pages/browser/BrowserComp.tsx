@@ -194,9 +194,6 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
                   </div>
                 )
               })}
-              <BootstrapButton variant='contained' disableRipple>
-                Bootstrap
-              </BootstrapButton>
             </CardContent>
           </Card>
           {isClicked || fetchClick ? (
