@@ -90,40 +90,6 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
     }
   }, [fetchClick])
 
-  const BootstrapButton = styled(Button)<ButtonProps>({
-    boxShadow: 'none',
-    textTransform: 'none',
-    fontSize: 16,
-    padding: '6px 12px',
-    border: '1px solid',
-    lineHeight: 1.5,
-    backgroundColor: '#0D6EFD !important',
-    borderColor: '#0D6EFD !important',
-    fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"'
-    ].join(','),
-
-    '&:active': {
-      boxShadow: 'none',
-      backgroundColor: '#0A58CA !important',
-      borderColor: '#0A53BE !important'
-    },
-    '&:focus, &.Mui-focusVisible': {
-      backgroundColor: '#0B5ED7 !important',
-      borderColor: '#0A58CA !important',
-      boxShadow: '0 0 0 0.25rem rgba(49,132,253,0.5) !important'
-    }
-  })
-
   return (
     <div>
       <Box sx={{ justifyContent: 'right', display: 'flex', marginBottom: 3 }}>

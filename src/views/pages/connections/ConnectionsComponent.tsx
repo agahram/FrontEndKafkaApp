@@ -64,56 +64,67 @@ const DialogEditUserInfo = ({ name, details, id }: Props) => {
   return (
     <>
       <Card>
-        <CardContent sx={{ textAlign: 'center', '& svg': { mb: 2 }, marginTop: -5 }}>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'end' }}>
-              <Box sx={{ display: 'flex', paddingTop: 5 }}>
-                <Icon icon='mdi:apache-kafka' fontSize={40} />
-              </Box>
-              <Box sx={{ mx: 2, paddingBottom: 2 }}>
-                <Typography sx={{ fontSize: 15, fontWeight: 600 }}>{name}</Typography>
-                <Typography sx={{ fontSize: 10, fontWeight: 600 }}>KAFKA</Typography>
-              </Box>
-            </Box>
-            <MoreButton id={id} name={name} details={details} />
-          </Box>
-          <Stack direction='row' sx={{ mb: 4 }}>
-            <Stack spacing={0.1}>
-              <Typography sx={{ mr: 3, fontWeight: 600, fontSize: 14 }}>Details</Typography>
-              <Typography sx={{ mr: 3, fontSize: 14 }}>{details}</Typography>
-            </Stack>
-          </Stack>
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
+        <>
           {isLoading ? (
             <Loader />
-          ) : isConnected ? (
-            <Stack spacing={1.5}>
-              <ViewCluster name={name} />
-              <Button
-                variant='contained'
-                sx={{ mr: 2, color: 'white' }}
-                onClick={() => handleClickDisconnect()}
-                fullWidth
-              >
-                Disconnect
-              </Button>
-            </Stack>
           ) : (
-            <Button variant='outlined' sx={{ mr: 2, fontWeight: 401 }} onClick={() => handleClickConnect()} fullWidth>
-              Connect
-            </Button>
+            <>
+              <CardContent sx={{ textAlign: 'center', '& svg': { mb: 2 }, marginTop: -5 }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'end' }}>
+                    <Box sx={{ display: 'flex', paddingTop: 5 }}>
+                      <Icon icon='mdi:apache-kafka' fontSize={40} />
+                    </Box>
+                    <Box sx={{ mx: 2, paddingBottom: 2 }}>
+                      <Typography sx={{ fontSize: 15, fontWeight: 600 }}>{name}</Typography>
+                      <Typography sx={{ fontSize: 10, fontWeight: 600 }}>KAFKA</Typography>
+                    </Box>
+                  </Box>
+                  <MoreButton id={id} name={name} details={details} />
+                </Box>
+                <Stack direction='row' sx={{ mb: 4 }}>
+                  <Stack spacing={0.1}>
+                    <Typography sx={{ mr: 3, fontWeight: 600, fontSize: 14 }}>Details</Typography>
+                    <Typography sx={{ mr: 3, fontSize: 14 }}>{details}</Typography>
+                  </Stack>
+                </Stack>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                {isConnected ? (
+                  <Stack spacing={1.5}>
+                    <ViewCluster name={name} />
+                    <Button
+                      variant='contained'
+                      sx={{ mr: 2, color: 'white' }}
+                      onClick={() => handleClickDisconnect()}
+                      fullWidth
+                    >
+                      Disconnect
+                    </Button>
+                  </Stack>
+                ) : (
+                  <Button
+                    variant='outlined'
+                    sx={{ mr: 2, fontWeight: 401 }}
+                    onClick={() => handleClickConnect()}
+                    fullWidth
+                  >
+                    Connect
+                  </Button>
+                )}
+              </CardContent>
+            </>
           )}
-        </CardContent>
+        </>
       </Card>
     </>
   )
