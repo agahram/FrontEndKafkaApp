@@ -1,5 +1,15 @@
 // ** React Imports
-import { JSXElementConstructor, ReactElement, ReactFragment, ReactPortal, use, useEffect, useState } from 'react'
+import {
+  JSXElementConstructor,
+  ReactElement,
+  ReactFragment,
+  ReactPortal,
+  Ref,
+  forwardRef,
+  use,
+  useEffect,
+  useState
+} from 'react'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -15,9 +25,12 @@ import { left } from '@popperjs/core'
 import toast from 'react-hot-toast'
 import ViewCluster from './ViewCluster'
 import { ThemeContext } from '@emotion/react'
-import { Box } from '@mui/material'
+import { Alert, Box, DialogActions, DialogContent, Fade, FadeProps, Grid, Snackbar } from '@mui/material'
+import Dialog from '@mui/material/Dialog'
 import Icon from 'src/@core/components/icon'
 import Loader from '../catalog/Loader'
+import TestConnection from './TestConnection'
+import AlertDialog from './AlertDialog'
 
 interface Props {
   name: string
@@ -27,27 +40,35 @@ interface Props {
 
 const DialogEditUserInfo = ({ name, details, id }: Props) => {
   // ** States
+  const [open, setOpen] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isConnected, setIsConnected] = useState(false)
-  const { checkConnection, setTestConnection, getConnections, connections } = useConnection()
+  const { checkConnection, setTestConnection, getConnections, connections, testConnection } = useConnection()
   const context = useConnection()
 
+  const Transition = forwardRef(function Transition(
+    props: FadeProps & { children?: ReactElement<any, any> },
+    ref: Ref<unknown>
+  ) {
+    return <Fade ref={ref} {...props} />
+  })
+
   useEffect(() => {
-    if (details === context.isConnected) {
+    if ((details === context.isConnected) === true) {
       setIsConnected(true)
+    } else {
+      setIsConnected(false)
     }
   }, [context.isConnected])
 
-  // useEffect(() => {
-  //   handleClickConnect()
-  // }, [getConnections])
-
   function handleClickDisconnect() {
-    setIsConnected(false)
     context.setIsConnected('')
   }
 
   async function handleClickConnect() {
+    handleClickDisconnect()
+    // console.log('details', details)
+    setOpen(false)
     setIsLoading(true)
     let data = await checkConnection(details)
 
@@ -56,17 +77,21 @@ const DialogEditUserInfo = ({ name, details, id }: Props) => {
       setIsConnected(true)
       setIsLoading(false)
     } else {
-      toast('Cannot connect')
+      setOpen(true)
+      // toast('Cannot connect')
       setIsLoading(false)
     }
   }
 
   return (
     <>
+      <AlertDialog open={open} onClose={() => setOpen(false)} />
       <Card>
         <>
           {isLoading ? (
-            <Loader />
+            <Box>
+              <Loader />
+            </Box>
           ) : (
             <>
               <CardContent sx={{ textAlign: 'center', '& svg': { mb: 2 }, marginTop: -5 }}>
@@ -112,14 +137,16 @@ const DialogEditUserInfo = ({ name, details, id }: Props) => {
                     </Button>
                   </Stack>
                 ) : (
-                  <Button
-                    variant='outlined'
-                    sx={{ mr: 2, fontWeight: 401 }}
-                    onClick={() => handleClickConnect()}
-                    fullWidth
-                  >
-                    Connect
-                  </Button>
+                  <>
+                    <Button
+                      variant='outlined'
+                      sx={{ mr: 2, fontWeight: 401 }}
+                      onClick={() => handleClickConnect()}
+                      fullWidth
+                    >
+                      Connect
+                    </Button>
+                  </>
                 )}
               </CardContent>
             </>
@@ -131,3 +158,13 @@ const DialogEditUserInfo = ({ name, details, id }: Props) => {
 }
 
 export default DialogEditUserInfo
+
+{
+  /* {!context.isConnected ? (
+                  <>
+                    
+                  </>
+                ) : (
+                  <></>
+                )} */
+}

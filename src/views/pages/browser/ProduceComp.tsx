@@ -38,36 +38,6 @@ export default function ProduceComp({ topicName }: Props) {
     })
   }
 
-  // const handleNewRecord = () => {
-  //   setProduceClick(true)
-  // }
-  // useEffect(() => {
-  //   if (topicName && newRecords.key && newRecords.value && header) {
-  //     produceMessage({
-  //       topic: topicName,
-  //       key: newRecords.key,
-  //       value: newRecords.value,
-  //       headers: [
-  //         {
-  //           key: header.key,
-  //           value: header.value
-  //         }
-  //       ]
-  //     })
-  //     setIsProduced(true)
-  //     setOpen(false)
-  //     setProduceClick(false)
-  //   }
-  // }, [produceClick])
-
-  // useEffect(() => {
-  //   if (topicName) {
-  //     handlePagination({ page: 0, pageSize: 5 }, topicName)
-  //     getRecordsCount(topicName)
-  //     setIsProduced(false)
-  //   }
-  // }, [isProduced])
-
   const handleNewRecord = () => {
     if (topicName && newRecords.key && newRecords.value && header) {
       produceMessage({

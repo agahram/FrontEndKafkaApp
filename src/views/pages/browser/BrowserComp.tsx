@@ -74,6 +74,7 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
   }, [query])
 
   function handleClick(name: string) {
+    setStyle({ hover: true })
     setIsClicked(true)
     setName(name)
   }
@@ -105,7 +106,9 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
         </Button>
       </Box>
       {isLoading ? (
-        <Loader />
+        <Box sx={{ marginTop: 30 }}>
+          <Loader />
+        </Box>
       ) : (
         <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
           <Card sx={{ width: auto, minWidth: 280, minHeight: 400, marginRight: 5, position: 'left', padding: 5 }}>
@@ -151,9 +154,10 @@ export default function BrowserComp(props: { topicName: string | string[] | unde
                         fontSize: '15px',
                         marginLeft: -20,
                         minWidth: 350
+                        // backgroundColor: style.hover ? '#6D788D' : '#FFF'
                       }}
-                      onMouseEnter={() => setStyle({ hover: true })}
-                      onMouseLeave={() => setStyle({ hover: false })}
+                      // onMouseEnter={() => setStyle({ hover: true })}
+                      // onMouseLeave={() => setStyle({ hover: false })}
                     >
                       {el.name}
                     </Button>
