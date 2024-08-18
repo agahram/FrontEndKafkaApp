@@ -67,7 +67,7 @@ export default function SimpleDialogDemo({ name }: Props) {
         <List sx={{ pt: 0, width: 500, display: 'flex', marginTop: -5, justifyContent: 'center' }}>
           <Stack>
             <p>Clone existing topic in your environment.</p>
-            <p>Enter old name</p>
+            <p>Old name</p>
             <div>
               <form noValidate autoComplete='off'>
                 <FormControl sx={{ width: '45ch' }}>

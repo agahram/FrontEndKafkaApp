@@ -63,7 +63,7 @@ export default function SimpleDialogDemo({ name }: Props) {
         Edit
       </Button>
       <Dialog onClose={handleClose} open={open}>
-        <DialogTitle sx={{ justifyContent: 'center' }}>Create a new topic</DialogTitle>
+        <DialogTitle sx={{ justifyContent: 'center' }}>Edit a topic</DialogTitle>
         <List sx={{ pt: 0, width: 500, display: 'flex', marginTop: -5, justifyContent: 'center' }}>
           <Stack>
             <p>Edit existing topic in your environment.</p>

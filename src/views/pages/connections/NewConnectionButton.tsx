@@ -129,7 +129,7 @@ export default function NewConnection() {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label='Bootstrap Servers'
+                label='Bootstrap Server'
                 value={newConnection.boot_server}
                 onChange={e => handleInputChange(e, 'boot_server')}
               />

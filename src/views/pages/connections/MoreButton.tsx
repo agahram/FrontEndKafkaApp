@@ -12,6 +12,7 @@ import Divider from '@mui/material/Divider'
 import { useConnection } from 'src/context/ConnectionsContext'
 import { ClickAwayListener } from '@mui/base'
 import Icon from 'src/@core/components/icon'
+import DuplicateConnection from './DuplicateConnection'
 
 interface Props {
   id: number
@@ -63,14 +64,15 @@ export default function PositionedPopper({ id, details, name }: Props) {
                     </Stack>
                     <Divider />
                     <Stack sx={{ marginBottom: -10, marginTop: -10 }}>
-                      <Button
+                      {/* <Button
                         variant='text'
                         sx={{ mr: 2, fontWeight: 401, fontSize: 14, textTransform: 'capitalize' }}
                         onClick={() => handleDuplicate()}
                       >
                         <Icon icon='ph:copy' fontSize={23} />
                         Duplicate
-                      </Button>
+                      </Button> */}
+                      <DuplicateConnection details={details} name={name} id={id} />
                     </Stack>
                     <Divider />
                     <Stack sx={{ marginBottom: -2, marginTop: -2 }}>
